@@ -1,26 +1,172 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Brand palette — the single source of truth for the Zenlix look.
+   Change these and the whole site rebrands (this was `:root` in style.css).
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-navy-950: #071527;
+  --color-navy-900: #0a1b33;
+  --color-navy-800: #122a4d;
+  --color-navy-700: #1b3a63;
+  --color-gold-500: #c9a227;
+  --color-gold-300: #e3c468;
+  --color-cream: #f6f4ef;
+  --color-ink: #1b2430;
+  --color-slate-muted: #5b6472;
+  --color-line: #dad3c2;
+
+  /* Text tones used on top of the navy sections */
+  --color-navy-fg: #c3cbdb;
+  --color-navy-fg-muted: #aab4c6;
+  --color-navy-fg-subtle: #a9b3c4;
+
+  --radius: 0.125rem;
 }
 
+/* shadcn semantic tokens, re-pointed at the brand palette */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-fraunces);
+  --font-mono: var(--font-plex-mono);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #f6f4ef;
+  --foreground: #1b2430;
+  --card: #ffffff;
+  --card-foreground: #1b2430;
+  --popover: #ffffff;
+  --popover-foreground: #1b2430;
+  --primary: #0a1b33;
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff;
+  --secondary-foreground: #0a1b33;
+  --muted: #efece4;
+  --muted-foreground: #5b6472;
+  --accent: #c9a227;
+  --accent-foreground: #0a1b33;
+  --destructive: #b3261e;
+  --border: #dad3c2;
+  --input: #dad3c2;
+  --ring: #c9a227;
+}
+
+/* Applied to the navy sections so shadcn primitives (Select, Sheet, inputs)
+   invert correctly instead of rendering cream-on-navy. */
+.dark {
+  --background: #0a1b33;
+  --foreground: #ffffff;
+  --card: #122a4d;
+  --card-foreground: #ffffff;
+  --popover: #122a4d;
+  --popover-foreground: #ffffff;
+  --primary: #c9a227;
+  --primary-foreground: #0a1b33;
+  --secondary: rgba(255, 255, 255, 0.08);
+  --secondary-foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: #a9b3c4;
+  --accent: #c9a227;
+  --accent-foreground: #0a1b33;
+  --destructive: #ff6b61;
+  --border: rgba(255, 255, 255, 0.14);
+  --input: rgba(255, 255, 255, 0.2);
+  --ring: #c9a227;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    /* Offset in-page anchors so the fixed header never covers a heading. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading font-semibold text-navy-900;
+    letter-spacing: -0.01em;
+  }
+
+  /* Never let a long word force a horizontal scrollbar on narrow phones. */
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  a {
+    overflow-wrap: break-word;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* The old `.wrap` class: centred column with responsive gutters. */
+@utility container-wrap {
+  width: 100%;
+  max-width: 74.25rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
 }
