@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MailWarningIcon } from "lucide-react";
 
 import { AdminShell } from "@/components/admin/admin-shell";
+import { FilterLink } from "@/components/admin/filter-link";
 import { StatusBadge } from "@/components/admin/status-badge";
 import {
   Table,
@@ -20,7 +21,6 @@ import {
   type ContactSubmission,
   type SubmissionStatus,
 } from "@/lib/supabase/types";
-import { cn } from "@/lib/utils";
 
 // Enquiry data must never be served from a static or shared cache.
 export const dynamic = "force-dynamic";
@@ -175,31 +175,6 @@ export default async function AdminDashboardPage({
         </>
       )}
     </AdminShell>
-  );
-}
-
-function FilterLink({
-  href,
-  active,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "border px-3 py-1.5 text-sm transition-colors",
-        active
-          ? "border-navy-900 bg-navy-900 text-white"
-          : "border-line bg-white text-slate-muted hover:border-navy-900 hover:text-navy-900",
-      )}
-    >
-      {children}
-    </Link>
   );
 }
 

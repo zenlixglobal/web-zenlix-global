@@ -1,9 +1,13 @@
+import { AnalyticsTracker } from "@/components/analytics/analytics-tracker";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 
 /**
  * Marketing shell. The header is fixed, so every page here opens with a navy
  * hero/banner that carries its own top padding to sit clear of it.
+ *
+ * Analytics is mounted here rather than in the root layout so /admin is never
+ * tracked — the team browsing their own enquiries is not traffic.
  */
 export default function SiteLayout({
   children,
@@ -18,6 +22,7 @@ export default function SiteLayout({
       >
         Skip to content
       </a>
+      <AnalyticsTracker />
       <SiteHeader />
       <main id="main" className="flex-1">
         {children}

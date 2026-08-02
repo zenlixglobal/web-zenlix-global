@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { inquiryGroups } from "@/content/site";
+import { trackEvent } from "@/lib/analytics/client";
 import { idleFormState } from "@/lib/validation/contact";
 
 const labelClass =
@@ -56,8 +57,14 @@ export function ContactForm() {
     if (state.status === "success") {
       toast.success(state.message);
       formRef.current?.reset();
+      // Marks the analytics session as converted, which is what turns raw
+      // traffic into a conversion rate on the admin dashboard.
+      trackEvent("contact_submitted");
     } else if (state.status === "error") {
       toast.error(state.message);
+      // Worth recording separately: a spike here means the form is failing,
+      // not that nobody is interested.
+      trackEvent("contact_failed");
     }
   }, [state]);
 

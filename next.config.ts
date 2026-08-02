@@ -40,6 +40,15 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "no-store, max-age=0" },
         ],
       },
+      {
+        // Same reasoning for the admin-only JSON endpoints, which the rule
+        // above does not match.
+        source: "/api/admin/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+          { key: "Cache-Control", value: "no-store, max-age=0" },
+        ],
+      },
     ];
   },
 };

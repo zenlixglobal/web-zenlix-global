@@ -65,5 +65,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  // `/api/admin/*` is included so the admin JSON endpoints get the same session
+  // refresh as the pages that poll them — a dashboard left open for an hour
+  // must not start 401-ing. The public analytics beacon is deliberately absent:
+  // it needs no session, and validating one on every heartbeat would be a
+  // Supabase round trip per visitor per 15 seconds.
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
 };

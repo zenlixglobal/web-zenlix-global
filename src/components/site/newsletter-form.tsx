@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { subscribeToNewsletter } from "@/app/actions/contact";
 import { footer } from "@/content/site";
+import { trackEvent } from "@/lib/analytics/client";
 import { idleFormState } from "@/lib/validation/contact";
 
 function SubmitButton() {
@@ -38,6 +39,7 @@ export function NewsletterForm() {
     if (state.status === "success") {
       toast.success(state.message);
       formRef.current?.reset();
+      trackEvent("newsletter_subscribed");
     } else if (state.status === "error") {
       toast.error(state.message);
     }

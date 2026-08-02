@@ -5,6 +5,15 @@
  *   npx supabase gen types typescript --project-id <ref> > src/lib/supabase/types.ts
  */
 
+import type {
+  AnalyticsBreakdownRow,
+  AnalyticsLiveSnapshot,
+  AnalyticsOverview,
+  AnalyticsTimeseriesPoint,
+  BreakdownDimension,
+  TimeBucket,
+} from "@/lib/analytics/types";
+
 export const SUBMISSION_STATUSES = [
   "new",
   "in_progress",
@@ -38,6 +47,50 @@ export type NewsletterSubscriber = {
   unsubscribed_at: string | null;
 };
 
+/** Mirrors supabase/migrations/0002_analytics.sql. */
+export type AnalyticsSession = {
+  id: string;
+  started_at: string;
+  last_seen_at: string;
+  visitor_hash: string;
+  entry_path: string;
+  current_path: string;
+  page_view_count: number;
+  event_count: number;
+  referrer_host: string | null;
+  referrer_url: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  utm_content: string | null;
+  country: string | null;
+  device_type: string;
+  browser: string | null;
+  os: string | null;
+  screen_width: number | null;
+  converted_at: string | null;
+};
+
+export type AnalyticsPageView = {
+  id: number;
+  session_id: string;
+  created_at: string;
+  path: string;
+  title: string | null;
+  referrer_host: string | null;
+  duration_ms: number | null;
+};
+
+export type AnalyticsEvent = {
+  id: number;
+  session_id: string;
+  created_at: string;
+  name: string;
+  path: string | null;
+  props: Record<string, unknown>;
+};
+
 /** None of these tables have foreign-key joins the client needs to traverse. */
 type NoRelationships = [];
 
@@ -68,10 +121,61 @@ export type Database = {
         Update: Partial<{ user_id: string; email: string }>;
         Relationships: NoRelationships;
       };
+      // Analytics rows are only ever written by `analytics_track()`, so the
+      // Insert/Update shapes are deliberately `never`.
+      analytics_sessions: {
+        Row: AnalyticsSession;
+        Insert: never;
+        Update: never;
+        Relationships: NoRelationships;
+      };
+      analytics_page_views: {
+        Row: AnalyticsPageView;
+        Insert: never;
+        Update: never;
+        Relationships: NoRelationships;
+      };
+      analytics_events: {
+        Row: AnalyticsEvent;
+        Insert: never;
+        Update: never;
+        Relationships: NoRelationships;
+      };
     };
     Views: Record<string, never>;
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
+      analytics_track: {
+        Args: { p_payload: Record<string, unknown> };
+        Returns: undefined;
+      };
+      analytics_overview: {
+        Args: { p_from: string; p_to: string };
+        Returns: AnalyticsOverview;
+      };
+      analytics_timeseries: {
+        Args: {
+          p_from: string;
+          p_to: string;
+          p_bucket: TimeBucket;
+          p_tz: string;
+        };
+        Returns: AnalyticsTimeseriesPoint[];
+      };
+      analytics_breakdown: {
+        Args: {
+          p_from: string;
+          p_to: string;
+          p_dimension: BreakdownDimension;
+          p_limit: number;
+        };
+        Returns: AnalyticsBreakdownRow[];
+      };
+      analytics_live: {
+        Args: { p_window_seconds: number };
+        Returns: AnalyticsLiveSnapshot;
+      };
+      analytics_prune: { Args: { p_keep_days: number }; Returns: number };
     };
     Enums: {
       submission_status: SubmissionStatus;

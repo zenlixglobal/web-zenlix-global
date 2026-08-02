@@ -25,6 +25,29 @@
   --color-navy-fg-muted: #aab4c6;
   --color-navy-fg-subtle: #a9b3c4;
 
+  /* -------------------------------------------------------------------------
+     Data-visualisation palette (admin analytics).
+
+     Brand-derived hues, snapped to steps that clear every categorical check
+     against the white card surface these charts render on: OKLCH lightness
+     0.43–0.77, chroma >= 0.10, protan/deutan separation dE >= 8 and
+     normal-vision dE >= 15 on both the adjacent and the all-pairs list, and
+     >= 3:1 contrast. Assign slots in order and never cycle past slot 4 —
+     re-validate before changing a hex.
+     ------------------------------------------------------------------------- */
+  --color-chart-1: #2f6bb3; /* visitors */
+  --color-chart-2: #b08c14; /* page views */
+  --color-chart-3: #00998c; /* enquiries */
+  --color-chart-4: #b8412c; /* reserved 4th slot */
+  --color-chart-grid: #e8e4da;
+  --color-chart-axis: #cec7b6;
+  --color-chart-track: #eeeade;
+
+  /* Delta cues. Text-weight steps (>= 4.5:1 on white) rather than the mark
+     steps, because a delta is always rendered as a label. */
+  --color-positive: #006300;
+  --color-negative: #b3261e;
+
   --radius: 0.125rem;
 }
 
