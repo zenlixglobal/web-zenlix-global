@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 
+import { sendEnquirerAcknowledgement } from "@/lib/email/send-acknowledgement-email";
 import { sendContactEmail } from "@/lib/email/send-contact-email";
 import { isSupabaseConfigured } from "@/lib/env";
 import { clientIpFrom, rateLimit } from "@/lib/rate-limit";
@@ -10,7 +11,9 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
   contactSchema,
   newsletterSchema,
+  readContactValues,
   type FormState,
+  type NewsletterFormState,
 } from "@/lib/validation/contact";
 
 const GENERIC_ERROR =
@@ -27,36 +30,33 @@ const SUCCESS_MESSAGE =
  * enquiry.
  */
 export async function submitContactForm(
-  _prevState: FormState,
+  prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  const attempt = (prevState.attempt ?? 0) + 1;
+  // Captured before validation so every failure path can hand the visitor
+  // their own text back.
+  const values = readContactValues(formData);
+  const fail = (message: string, fieldErrors?: FormState["fieldErrors"]) =>
+    ({ status: "error", message, fieldErrors, values, attempt }) satisfies FormState;
+
   const parsed = contactSchema.safeParse({
-    firstName: formData.get("firstName"),
-    lastName: formData.get("lastName"),
-    email: formData.get("email"),
-    phone: formData.get("phone"),
-    company: formData.get("company"),
-    inquiryType: formData.get("inquiryType"),
-    message: formData.get("message"),
+    ...values,
     website: formData.get("website") ?? "",
   });
 
   if (!parsed.success) {
-    return {
-      status: "error",
-      message: "Please check the highlighted fields and try again.",
-      fieldErrors: z.flattenError(parsed.error).fieldErrors as Record<
-        string,
-        string[]
-      >,
-    };
+    return fail(
+      "Please check the highlighted fields and try again.",
+      z.flattenError(parsed.error).fieldErrors as Record<string, string[]>,
+    );
   }
 
   const input = parsed.data;
 
   // Honeypot: accept silently so bots don't learn they were caught.
   if (input.website) {
-    return { status: "success", message: SUCCESS_MESSAGE };
+    return { status: "success", message: SUCCESS_MESSAGE, attempt };
   }
 
   const requestHeaders = await headers();
@@ -67,19 +67,18 @@ export async function submitContactForm(
   });
 
   if (!limit.allowed) {
-    return {
-      status: "error",
-      message: `Too many submissions from this connection. Please try again in ${Math.ceil(
+    return fail(
+      `Too many submissions from this connection. Please try again in ${Math.ceil(
         limit.retryAfterSeconds / 60,
       )} minute(s).`,
-    };
+    );
   }
 
   if (!isSupabaseConfigured()) {
     console.error("[contact] Supabase is not configured — dropping submission", {
       email: input.email,
     });
-    return { status: "error", message: GENERIC_ERROR };
+    return fail(GENERIC_ERROR);
   }
 
   try {
@@ -103,14 +102,19 @@ export async function submitContactForm(
 
     if (error || !data) {
       console.error("[contact] Supabase insert failed", error);
-      return { status: "error", message: GENERIC_ERROR };
+      return fail(GENERIC_ERROR);
     }
 
-    const emailResult = await sendContactEmail(input, {
-      submissionId: data.id,
-    });
+    // Both notifications go out together — neither should wait on the other,
+    // and neither can fail the submission, which the database write already
+    // accepted. `allSettled` because a rejected acknowledgement must not stop
+    // the team from being told.
+    const [teamResult] = await Promise.allSettled([
+      sendContactEmail(input, { submissionId: data.id }),
+      sendEnquirerAcknowledgement(input),
+    ]);
 
-    if (emailResult.sent) {
+    if (teamResult.status === "fulfilled" && teamResult.value.sent) {
       // Recorded so the admin list can flag enquiries nobody was emailed about.
       await supabase
         .from("contact_submissions")
@@ -118,25 +122,29 @@ export async function submitContactForm(
         .eq("id", data.id);
     }
 
-    return { status: "success", message: SUCCESS_MESSAGE };
+    return { status: "success", message: SUCCESS_MESSAGE, attempt };
   } catch (error) {
     console.error("[contact] Unexpected failure", error);
-    return { status: "error", message: GENERIC_ERROR };
+    return fail(GENERIC_ERROR);
   }
 }
 
 /** Footer newsletter signup. */
 export async function subscribeToNewsletter(
-  _prevState: FormState,
+  prevState: NewsletterFormState,
   formData: FormData,
-): Promise<FormState> {
-  const parsed = newsletterSchema.safeParse({ email: formData.get("email") });
+): Promise<NewsletterFormState> {
+  const attempt = (prevState.attempt ?? 0) + 1;
+  // Same React 19 form-reset problem as the contact form: echo the address
+  // back so a rejected signup doesn't blank the field.
+  const email = String(formData.get("email") ?? "").slice(0, 400);
+  const fail = (message: string) =>
+    ({ status: "error", message, email, attempt }) satisfies NewsletterFormState;
+
+  const parsed = newsletterSchema.safeParse({ email });
 
   if (!parsed.success) {
-    return {
-      status: "error",
-      message: "Enter a valid email address.",
-    };
+    return fail("Enter a valid email address.");
   }
 
   const ip = clientIpFrom(await headers());
@@ -146,12 +154,12 @@ export async function subscribeToNewsletter(
   });
 
   if (!limit.allowed) {
-    return { status: "error", message: "Too many attempts. Try again later." };
+    return fail("Too many attempts. Try again later.");
   }
 
   if (!isSupabaseConfigured()) {
     console.error("[newsletter] Supabase is not configured");
-    return { status: "error", message: GENERIC_ERROR };
+    return fail(GENERIC_ERROR);
   }
 
   try {
@@ -164,12 +172,16 @@ export async function subscribeToNewsletter(
     // visitor's point of view, and confirming it doesn't leak anything useful.
     if (error && error.code !== "23505") {
       console.error("[newsletter] Supabase insert failed", error);
-      return { status: "error", message: GENERIC_ERROR };
+      return fail(GENERIC_ERROR);
     }
 
-    return { status: "success", message: "You're subscribed. Welcome aboard." };
+    return {
+      status: "success",
+      message: "You're subscribed. Welcome aboard.",
+      attempt,
+    };
   } catch (error) {
     console.error("[newsletter] Unexpected failure", error);
-    return { status: "error", message: GENERIC_ERROR };
+    return fail(GENERIC_ERROR);
   }
 }

@@ -7,7 +7,10 @@ import { toast } from "sonner";
 import { subscribeToNewsletter } from "@/app/actions/contact";
 import { footer } from "@/content/site";
 import { trackEvent } from "@/lib/analytics/client";
-import { idleFormState } from "@/lib/validation/contact";
+import {
+  idleFormState,
+  type NewsletterFormState,
+} from "@/lib/validation/contact";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -29,16 +32,20 @@ function SubmitButton() {
  * Subscribers land in the `newsletter_subscribers` table.
  */
 export function NewsletterForm() {
-  const [state, formAction] = useActionState(
+  // Explicit generic: the initial value is a bare FormState, but the action
+  // widens it with the echoed address.
+  const [state, formAction] = useActionState<NewsletterFormState, FormData>(
     subscribeToNewsletter,
     idleFormState,
   );
   const formRef = useRef<HTMLFormElement>(null);
+  // See the contact form: React 19 clears an uncontrolled action form on
+  // completion, so the address is re-seeded from the action's response.
+  const attempt = state.attempt ?? 0;
 
   useEffect(() => {
     if (state.status === "success") {
       toast.success(state.message);
-      formRef.current?.reset();
       trackEvent("newsletter_subscribed");
     } else if (state.status === "error") {
       toast.error(state.message);
@@ -52,9 +59,11 @@ export function NewsletterForm() {
           Email address
         </label>
         <input
+          key={`newsletter-${attempt}`}
           id="newsletter-email"
           type="email"
           name="email"
+          defaultValue={state.email ?? ""}
           required
           autoComplete="email"
           placeholder={footer.newsletter.placeholder}
