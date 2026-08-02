@@ -53,10 +53,17 @@ export function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const uid = useId();
 
+  // React 19 resets an uncontrolled `<form action={fn}>` once the action
+  // settles — including when it failed validation. The action echoes the
+  // submitted strings back, and keying the inputs on `attempt` remounts them
+  // with those values, so a rejected submit never costs the visitor their
+  // typing. On success `values` is absent, so the form comes back empty.
+  const values = state.values;
+  const attempt = state.attempt ?? 0;
+
   useEffect(() => {
     if (state.status === "success") {
       toast.success(state.message);
-      formRef.current?.reset();
       // Marks the analytics session as converted, which is what turns raw
       // traffic into a conversion rate on the admin dashboard.
       trackEvent("contact_submitted");
@@ -69,6 +76,18 @@ export function ContactForm() {
   }, [state]);
 
   const errorFor = (field: string) => state.fieldErrors?.[field];
+
+  // Send focus to the first field that failed, so the visitor is taken to the
+  // problem instead of hunting for the red text.
+  useEffect(() => {
+    if (state.status !== "error" || !state.fieldErrors) return;
+
+    const firstInvalid = formRef.current?.querySelector<HTMLElement>(
+      "[aria-invalid='true']",
+    );
+    firstInvalid?.focus({ preventScroll: true });
+    firstInvalid?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [state]);
 
   return (
     <form
@@ -96,8 +115,10 @@ export function ContactForm() {
           First Name *
         </FieldLabel>
         <Input
+          key={`firstName-${attempt}`}
           id={`${uid}-firstName`}
           name="firstName"
+          defaultValue={values?.firstName ?? ""}
           autoComplete="given-name"
           placeholder="Jane"
           required
@@ -111,8 +132,10 @@ export function ContactForm() {
           Last Name *
         </FieldLabel>
         <Input
+          key={`lastName-${attempt}`}
           id={`${uid}-lastName`}
           name="lastName"
+          defaultValue={values?.lastName ?? ""}
           autoComplete="family-name"
           placeholder="Doe"
           required
@@ -126,8 +149,10 @@ export function ContactForm() {
           Work Email *
         </FieldLabel>
         <Input
+          key={`email-${attempt}`}
           id={`${uid}-email`}
           name="email"
+          defaultValue={values?.email ?? ""}
           type="email"
           inputMode="email"
           autoComplete="email"
@@ -143,8 +168,10 @@ export function ContactForm() {
           Direct Phone *
         </FieldLabel>
         <Input
+          key={`phone-${attempt}`}
           id={`${uid}-phone`}
           name="phone"
+          defaultValue={values?.phone ?? ""}
           type="tel"
           inputMode="tel"
           autoComplete="tel"
@@ -163,8 +190,10 @@ export function ContactForm() {
           Company Name *
         </FieldLabel>
         <Input
+          key={`company-${attempt}`}
           id={`${uid}-company`}
           name="company"
+          defaultValue={values?.company ?? ""}
           autoComplete="organization"
           placeholder="Company Inc."
           required
@@ -182,7 +211,13 @@ export function ContactForm() {
         </FieldLabel>
         {/* Radix renders a hidden native control for `name`, so this still
             arrives in the FormData the Server Action receives. */}
-        <Select name="inquiryType" required>
+        {/* Radix needs `undefined`, not "", to show its placeholder. */}
+        <Select
+          key={`inquiryType-${attempt}`}
+          name="inquiryType"
+          required
+          defaultValue={values?.inquiryType || undefined}
+        >
           <SelectTrigger
             id={`${uid}-inquiryType`}
             className="h-12 w-full"
@@ -216,8 +251,10 @@ export function ContactForm() {
           How can we help? *
         </FieldLabel>
         <Textarea
+          key={`message-${attempt}`}
           id={`${uid}-message`}
           name="message"
+          defaultValue={values?.message ?? ""}
           rows={5}
           placeholder="Tell us a bit about your hiring need or role..."
           required
