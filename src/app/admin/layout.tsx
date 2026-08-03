@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 /** Admin pages are never indexed; see also the X-Robots-Tag in next.config.ts. */
 export const metadata: Metadata = {
-  title: { default: "Admin", template: "%s — Zenlix Admin" },
+  title: { default: "Admin", template: "%s | Zenlix Admin" },
   robots: { index: false, follow: false, nocache: true },
 };
 

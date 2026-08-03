@@ -270,8 +270,8 @@ export default async function AnalyticsPage({
       </div>
 
       <p className="mt-6 text-xs text-slate-muted">
-        Visitors are counted with a daily-rotating, non-reversible hash — no
-        cookies and no cross-day tracking — so a multi-day range totals daily
+        Visitors are counted with a daily-rotating, non-reversible hash, with no
+        cookies and no cross-day tracking, so a multi-day range totals daily
         uniques. Enquiry counts come from the enquiries table itself, which is
         why they can exceed tracked conversions when a visitor has Do Not Track
         enabled.

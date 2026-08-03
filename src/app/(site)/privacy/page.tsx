@@ -24,7 +24,7 @@ export default function PrivacyPage() {
         <Container>
           <LegalBody>
             <p>
-              <strong>[Placeholder — replace with your reviewed policy.]</strong>{" "}
+              <strong>[Placeholder. Replace with your reviewed policy.]</strong>{" "}
               This page is a starting outline only and is not legal advice.
             </p>
 
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
             <h2>How we use it</h2>
             <p>
               We use this information to respond to your enquiry, match
-              candidates and clients, and — where you have opted in — send
+              candidates and clients, and, where you have opted in, send
               hiring insights. We do not sell your personal information.
             </p>
 
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
             <h2>Your rights</h2>
             <p>
               You can ask us to access, correct, or delete the information we
-              hold about you. [Add the rights that apply in your jurisdiction —
+              hold about you. [Add the rights that apply in your jurisdiction:
               GDPR, CCPA, and so on.]
             </p>
 

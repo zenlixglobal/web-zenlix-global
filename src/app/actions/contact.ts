@@ -20,7 +20,7 @@ const GENERIC_ERROR =
   "Something went wrong on our end. Please try again, or email us directly.";
 
 const SUCCESS_MESSAGE =
-  "Thank you — your enquiry is with our team. We'll be in touch shortly.";
+  "Thank you. Your enquiry is with our team and we'll be in touch shortly.";
 
 /**
  * Handles the /contact form: validate → persist to Supabase → notify by email.

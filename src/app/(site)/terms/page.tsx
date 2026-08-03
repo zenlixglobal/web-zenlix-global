@@ -24,7 +24,7 @@ export default function TermsPage() {
         <Container>
           <LegalBody>
             <p>
-              <strong>[Placeholder — replace with your reviewed terms.]</strong>{" "}
+              <strong>[Placeholder. Replace with your reviewed terms.]</strong>{" "}
               This page is a starting outline only and is not legal advice.
             </p>
 
