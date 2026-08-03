@@ -15,7 +15,12 @@ export type Insight = {
   category: string;
   title: string;
   excerpt: string;
-  href: string;
+  /**
+   * Omit until the article actually exists. The card then renders as a teaser
+   * with no "Read Article" link, rather than shipping an href="#" that scrolls
+   * to the top and reads as a broken link to crawlers.
+   */
+  href?: string;
   image: { src: string; alt: string };
 };
 
@@ -205,39 +210,43 @@ export const insightsSection = {
       company: "Meridian Health Group",
     },
   ] satisfies Testimonial[],
-  /** EDIT: replace `href` with the real article URL, or delete a card. */
+  /**
+   * Add `href` to a card once the article is published and the "Read Article"
+   * link appears on it automatically. Until then these are teasers, which is
+   * why none of them link anywhere.
+   */
   articles: [
     {
-      category: "[Category]",
-      title: "[Article headline goes here]",
-      excerpt: "[One or two sentence summary of the article goes here.]",
-      href: "#",
+      category: "Hiring Trends",
+      title: "Why senior engineering roles sit open for five months",
+      excerpt:
+        "It is almost never candidate supply. It is a job spec written for someone who does not exist, a five-stage interview loop, and two weeks of silence before the offer.",
       image: {
         src: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600",
-        alt: "Engineers collaborating around a laptop",
+        alt: "Two engineers reviewing code together at a desk",
       },
     },
     {
-      category: "[Category]",
-      title: "[Article headline goes here]",
-      excerpt: "[One or two sentence summary of the article goes here.]",
-      href: "#",
+      category: "Salary Guide",
+      title: "What contract IT talent really costs in 2026",
+      excerpt:
+        "Bill rates are the number everyone negotiates. Conversion fees, ramp time, and the cost of a seat left empty for a quarter are the ones that decide the budget.",
       image: {
         src: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=600",
-        alt: "Financial analyst reviewing charts",
+        alt: "Financial paperwork and a calculator on a desk",
       },
     },
     {
-      category: "[Category]",
-      title: "[Article headline goes here]",
-      excerpt: "[One or two sentence summary of the article goes here.]",
-      href: "#",
+      category: "Executive Search",
+      title: "Replacing a leader without telling the market you are",
+      excerpt:
+        "Confidential search protects three parties at once: the incumbent still in the seat, the team who should not hear it as a rumour, and the candidate risking their current role to talk to you.",
       image: {
         src: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600",
-        alt: "Executive leadership meeting",
+        alt: "Two colleagues celebrating across a desk in an office",
       },
     },
-  ] satisfies Insight[],
+  ] as Insight[],
 } as const;
 
 /** EDIT: /about page copy. */

@@ -39,7 +39,7 @@ export function Insights() {
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:mt-5 lg:grid-cols-3 lg:gap-[30px]">
           {insightsSection.articles.map((article, index) => (
             <article
-              key={index}
+              key={article.title}
               className="group border border-line bg-white transition-shadow hover:shadow-sm"
             >
               <div className="relative h-45 overflow-hidden sm:h-[170px]">
@@ -61,12 +61,14 @@ export function Insights() {
                 <p className="mb-4 text-sm text-slate-muted">
                   {article.excerpt}
                 </p>
-                <Link
-                  href={article.href}
-                  className="inline-block border-b border-gold-500 pb-0.5 text-[13px] font-semibold text-navy-900 transition-colors hover:text-gold-500"
-                >
-                  Read Article <span aria-hidden>&rarr;</span>
-                </Link>
+                {article.href ? (
+                  <Link
+                    href={article.href}
+                    className="inline-block border-b border-gold-500 pb-0.5 text-[13px] font-semibold text-navy-900 transition-colors hover:text-gold-500"
+                  >
+                    Read Article <span aria-hidden>&rarr;</span>
+                  </Link>
+                ) : null}
               </div>
             </article>
           ))}
