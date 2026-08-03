@@ -60,7 +60,7 @@ export const hero = {
   headline: "We connect ambitious companies with",
   /** Rendered in italic gold as the second half of the headline. */
   headlineAccent: "talent that moves the needle.",
-  lede: "Zenlix Global builds high-performance teams for organizations that refuse to settle for average. Direct hire, contract, and executive search — engineered around your growth, not our quota.",
+  lede: "Zenlix Global builds high-performance teams for organizations that refuse to settle for average. Direct hire, contract, and executive search, engineered around your growth, not our quota.",
   primaryCta: { label: "Hire Talent", href: "/contact" },
   secondaryCta: { label: "Explore Expertise", href: "/#services" },
   /** EDIT: replace with your real numbers, or delete any stat you lack data for. */
@@ -72,7 +72,7 @@ export const hero = {
   /** EDIT: hero side panel image + caption. */
   panel: {
     caption: "Client Spotlight",
-    body: "From a single embedded recruiter to a fully outsourced hiring team — we scale with you as your headcount plans change quarter to quarter.",
+    body: "From a single embedded recruiter to a fully outsourced hiring team, we scale with you as your headcount plans change quarter to quarter.",
     image: {
       src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800",
       alt: "Team collaborating in a modern office",
@@ -97,7 +97,7 @@ export const servicesSection = {
       num: "02",
       title: "Contract Staffing",
       description:
-        "Flexible, project-based talent that ramps up or down with your roadmap — no long-term overhead.",
+        "Flexible, project-based talent that ramps up or down with your roadmap, with no long-term overhead.",
     },
     {
       num: "03",
@@ -142,7 +142,7 @@ export const servicesSection = {
 export const advantage = {
   eyebrow: "The Zenlix Advantage",
   heading: "We recruit the people who aren't applying anywhere.",
-  body: "Job boards surface who's looking. Our network reaches the top performers who are quietly open to the right move — the candidates your competitors never see.",
+  body: "Job boards surface who's looking. Our network reaches the top performers who are quietly open to the right move: the candidates your competitors never see.",
   badge: { value: "[10+]", label: "Years in Talent" },
   image: {
     src: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=800",
@@ -166,7 +166,7 @@ export const ctaStrip = {
 /** EDIT: social proof + insights. */
 export const insightsSection = {
   eyebrow: "Social Proof & Insights",
-  heading: "What our clients say — and what we're watching in the market.",
+  heading: "What our clients say, and what we're watching in the market.",
   /** EDIT: sample quotes, not real clients. Replace once you have permission to publish them. */
   testimonials: [
     {
@@ -220,7 +220,7 @@ export const aboutPage = {
   eyebrow: "Our Firm",
   heading: "Built by recruiters who wanted to do it differently.",
   intro:
-    "Zenlix Global exists because too many staffing firms optimize for speed over fit. We optimize for fit first — and speed follows.",
+    "Zenlix Global exists because too many staffing firms optimize for speed over fit. We optimize for fit first, and speed follows.",
   story: {
     eyebrow: "Our Story",
     heading: "[A short paragraph on how and why your firm was founded.]",
@@ -237,8 +237,8 @@ export const contactPage = {
   formEyebrow: "Connect With Our Team",
   formHeading: "Start the conversation.",
   formIntro:
-    "Discreet, professional, and entirely focused on your outcome — whether you're hiring or looking to make your next move.",
-  note: "Placeholder contact details — replace the bracketed text in src/content/site.ts with your real phone number, email, and office address before publishing.",
+    "Discreet, professional, and entirely focused on your outcome, whether you're hiring or looking to make your next move.",
+  note: "Placeholder contact details. Replace the bracketed text in src/content/site.ts with your real phone number, email, and office address before publishing.",
 } as const;
 
 /**

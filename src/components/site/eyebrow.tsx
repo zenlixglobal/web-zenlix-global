@@ -1,8 +1,11 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Small gold mono label with a leading rule, used above every section heading.
- * Ported from `.eyebrow` / `.eyebrow::before`.
+ * Small gold mono label above every section heading.
+ *
+ * The original `.eyebrow::before` drew a short gold rule to the left of the
+ * text. It was removed because at these sizes it reads as a stray dash rather
+ * than as a rule.
  */
 export function Eyebrow({
   className,
@@ -12,12 +15,11 @@ export function Eyebrow({
   return (
     <div
       className={cn(
-        "flex items-center gap-2.5 font-mono text-[11px] tracking-[0.14em] text-gold-500 uppercase sm:text-[12.5px]",
+        "flex items-center font-mono text-[11px] tracking-[0.14em] text-gold-500 uppercase sm:text-[12.5px]",
         className,
       )}
       {...props}
     >
-      <span aria-hidden className="h-px w-5.5 shrink-0 bg-gold-500" />
       {children}
     </div>
   );
