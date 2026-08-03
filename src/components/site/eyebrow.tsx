@@ -15,7 +15,7 @@ export function Eyebrow({
   return (
     <div
       className={cn(
-        "flex items-center font-mono text-[11px] tracking-[0.14em] text-gold-500 uppercase sm:text-[12.5px]",
+        "flex items-center font-mono text-[20px] tracking-[0.14em] text-gold-500 uppercase",
         className,
       )}
       {...props}
