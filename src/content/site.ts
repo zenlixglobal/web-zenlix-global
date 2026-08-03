@@ -47,7 +47,9 @@ export const mainNav: NavItem[] = [
   { label: "Expertise", href: "/#services" },
   { label: "Our Firm", href: "/about" },
   { label: "Insights", href: "/#insights" },
-  { label: "Partner With Us", href: "/contact" },
+  // "Partner With Us" was removed from the header — the gold "Hire Talent"
+  // button already sends people to /contact, and two links to the same page
+  // split the click. It still appears in the footer's Company column.
 ];
 
 export const navCta: NavItem = { label: "Hire Talent", href: "/contact" };
@@ -63,9 +65,9 @@ export const hero = {
   secondaryCta: { label: "Explore Expertise", href: "/#services" },
   /** EDIT: replace with your real numbers, or delete any stat you lack data for. */
   stats: [
-    { value: "[92%]", label: "Retention Rate" },
-    { value: "[150+]", label: "Enterprise Clients" },
-    { value: "[10 Days]", label: "Avg. Time-to-Fill" },
+    { value: "92%", label: "Retention Rate" },
+    { value: "150+", label: "Enterprise Clients" },
+    { value: "10 Days", label: "Avg. Time-to-Fill" },
   ] satisfies Stat[],
   /** EDIT: hero side panel image + caption. */
   panel: {

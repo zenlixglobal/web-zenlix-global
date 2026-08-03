@@ -15,12 +15,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { mainNav, navCta } from "@/content/site";
+import { cn } from "@/lib/utils";
 
 /**
  * The original markup had a `.nav-toggle` hamburger but shipped no JavaScript
  * to open anything. This is the working version.
  */
-export function MobileNav() {
+export function MobileNav({ className }: { className?: string }) {
   // Each link closes the drawer on click, which also covers same-page hash
   // links where the component never unmounts.
   const [open, setOpen] = useState(false);
@@ -32,7 +33,10 @@ export function MobileNav() {
           variant="ghost"
           size="icon-lg"
           aria-label="Open menu"
-          className="text-white hover:bg-white/10 hover:text-white md:hidden"
+          className={cn(
+            "text-white hover:bg-white/10 hover:text-white md:hidden",
+            className,
+          )}
         >
           <MenuIcon className="size-6" />
         </Button>
@@ -45,7 +49,11 @@ export function MobileNav() {
         <SheetHeader className="border-b border-white/10 px-5 py-4 text-left">
           <SheetTitle asChild>
             <div>
-              <Logo onNavigate={() => setOpen(false)} className="text-lg" />
+              <Logo
+                onNavigate={() => setOpen(false)}
+                className="text-lg"
+                markClassName="size-9"
+              />
             </div>
           </SheetTitle>
           <SheetDescription className="sr-only">

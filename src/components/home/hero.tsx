@@ -21,7 +21,11 @@ export function Hero() {
       <Container className="relative z-10 grid items-center gap-10 pt-28 pb-16 sm:pt-36 sm:pb-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-15 lg:pt-45 lg:pb-30">
         {/* Panel sits first on small screens, mirroring `.hero-panel { order:-1 }`. */}
         <div className="order-2 lg:order-1">
-          <Eyebrow className="mb-3.5">{hero.eyebrow}</Eyebrow>
+          {/* sm: repeated on purpose — the base class carries its own
+              sm:text-[12.5px], which would otherwise win above 640px. */}
+          <Eyebrow className="mb-3.5 text-[20px] font-bold sm:text-[20px]">
+            {hero.eyebrow}
+          </Eyebrow>
 
           <h1 className="text-[clamp(2.125rem,7vw,3.75rem)] leading-[1.08] text-white">
             {hero.headline}{" "}
@@ -55,7 +59,7 @@ export function Hero() {
                   <span className="block font-heading text-3xl font-semibold text-gold-300 sm:text-[40px]">
                     {stat.value}
                   </span>
-                  <span className="font-mono text-[13px] tracking-[0.03em] text-[#a9b3c4]">
+                  <span className="font-mono text-[15px] tracking-[0.03em] text-[#a9b3c4] sm:text-[17px]">
                     {stat.label}
                   </span>
                 </dd>
