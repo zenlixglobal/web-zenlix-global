@@ -82,7 +82,7 @@ create index if not exists analytics_page_views_open_idx
   where duration_ms is null;
 
 -- ---------------------------------------------------------------------------
--- Events — named interactions (contact_submitted, newsletter_subscribed, …).
+-- Events — named interactions (contact_submitted, contact_failed, …).
 -- ---------------------------------------------------------------------------
 create table if not exists public.analytics_events (
   id         bigint generated always as identity primary key,

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect, useId, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
@@ -18,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { inquiryGroups } from "@/content/site";
+import { inquiryGroups, legalDetails, site } from "@/content/site";
 import { trackEvent } from "@/lib/analytics/client";
 import { idleFormState } from "@/lib/validation/contact";
 
@@ -265,6 +266,34 @@ export function ContactForm() {
       </Field>
 
       <div className="mt-1.5 sm:col-span-2">
+        {/* TCPA consent has to be immediately above the button that gives it,
+            and has to name who the calls and texts will actually come from —
+            the same disclosure carriers ask for at A2P registration. It is
+            deliberately not a checkbox: consent to be contacted about your own
+            inquiry is the point of submitting the form. */}
+        <p className="mb-4 text-[12.5px] leading-relaxed text-navy-fg-muted">
+          By submitting this form you agree that {site.name} and{" "}
+          {legalDetails.messagingPartner}, acting on our behalf, may contact you
+          about your inquiry at the email address and phone number you provided,
+          including by autodialed calls and text messages. Consent is not a
+          condition of being considered for any role or service. Message
+          frequency varies, and message and data rates may apply; reply STOP to
+          opt out. See our{" "}
+          <Link
+            href="/terms"
+            className="underline underline-offset-2 hover:text-gold-300"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="/privacy"
+            className="underline underline-offset-2 hover:text-gold-300"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
         <SubmitButton />
         <p
           aria-live="polite"

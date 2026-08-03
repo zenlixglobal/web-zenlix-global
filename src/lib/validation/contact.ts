@@ -49,12 +49,6 @@ export const contactSchema = z.object({
 
 export type ContactInput = z.infer<typeof contactSchema>;
 
-export const newsletterSchema = z.object({
-  email: z.email("Enter a valid email address").trim().max(320),
-});
-
-export type NewsletterInput = z.infer<typeof newsletterSchema>;
-
 /** The raw strings a submission carried, echoed back on failure. */
 export type ContactFieldValues = {
   firstName: string;
@@ -92,9 +86,6 @@ export type FormState = {
 };
 
 export const idleFormState: FormState = { status: "idle", message: "" };
-
-/** Newsletter equivalent — one field, same reset problem. */
-export type NewsletterFormState = FormState & { email?: string };
 
 /**
  * Pulls the submitted strings straight off the FormData, before validation.

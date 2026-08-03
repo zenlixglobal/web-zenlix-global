@@ -43,7 +43,7 @@ export async function sendEnquirerAcknowledgement(
       // A reply to a "we got your message" email is a real reply. Send it to
       // the team, not to the no-reply sender.
       ...(replyTo.length > 0 ? { replyTo } : {}),
-      subject: `We've received your enquiry — ${site.name}`,
+      subject: `We've received your enquiry | ${site.name}`,
       text: plainText(input, inquiry),
       html: html(input, inquiry),
     });
@@ -81,7 +81,7 @@ function plainText(input: ContactInput, inquiry: string): string {
     "If any of that is wrong, or you need to add something, just reply to this",
     "email and it will reach us directly.",
     "",
-    `— The ${site.name} team`,
+    `The ${site.name} team`,
   ].join("\n");
 }
 

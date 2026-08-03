@@ -1,25 +1,31 @@
 import Link from "next/link";
 
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Container } from "@/components/site/container";
 import { LogoMark } from "@/components/site/logo";
-import { NewsletterForm } from "@/components/site/newsletter-form";
 import { contactDetails, footer, site } from "@/content/site";
 
 export function SiteFooter() {
   return (
     <footer className="bg-navy-950 pt-14 pb-8 text-[#8b95a8] sm:pt-[70px]">
       <Container>
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-12">
-          <div>
+        {/* A shorter throw than the page sections. The footer is the last
+            thing anyone scrolls to and is often already half in view when it
+            triggers, so a full-distance rise overshoots. */}
+        <Stagger
+          stagger={0.06}
+          className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-12"
+        >
+          <StaggerItem distance={14}>
             <div className="mb-4 flex items-center gap-2.5 font-heading text-xl text-white">
               <LogoMark size={32} className="size-8" />
               <span>{site.name}</span>
             </div>
             <p className="max-w-70 text-sm leading-[1.7]">{footer.tagline}</p>
-          </div>
+          </StaggerItem>
 
           {footer.columns.map((column) => (
-            <div key={column.heading}>
+            <StaggerItem key={column.heading} distance={14}>
               <FooterHeading>{column.heading}</FooterHeading>
               <ul>
                 {column.links.map((link) => (
@@ -33,43 +39,48 @@ export function SiteFooter() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </StaggerItem>
           ))}
 
-          <div>
+          <StaggerItem distance={14}>
             <FooterHeading>Connect</FooterHeading>
             <ul className="text-sm">
               <li className="mb-3">{contactDetails.addressShort}</li>
               <li className="mb-3">{contactDetails.phone}</li>
               <li className="mb-3 break-all">{contactDetails.email}</li>
             </ul>
-          </div>
+          </StaggerItem>
 
-          <div>
-            <FooterHeading>{footer.newsletter.heading}</FooterHeading>
-            <p className="max-w-70 text-sm leading-[1.7]">
-              {footer.newsletter.body}
-            </p>
-            <NewsletterForm />
-          </div>
-        </div>
+          {/* Legal sits last: it is the column people look for least, and the
+              copyright line directly below it is the same kind of small print. */}
+          <StaggerItem distance={14}>
+            <FooterHeading>Legal</FooterHeading>
+            <ul>
+              {footer.legal.map((link) => (
+                <li key={link.href} className="mb-3 text-sm">
+                  <Link
+                    href={link.href}
+                    className="transition-colors hover:text-gold-300"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </StaggerItem>
+        </Stagger>
 
-        <div className="mt-12 flex flex-col gap-3.5 border-t border-white/10 pt-6 text-[13px] sm:mt-15 sm:flex-row sm:items-center sm:justify-between">
+        <Reveal
+          distance={14}
+          className="mt-12 border-t border-white/10 pt-6 text-[13px] sm:mt-15"
+        >
+          {/* The legal links moved up into their own column, so this row is
+              the copyright alone rather than the same two links repeated a
+              hundred pixels apart. */}
           <span>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </span>
-          <span className="flex flex-wrap gap-x-6 gap-y-2">
-            {footer.legal.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-gold-300"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </span>
-        </div>
+        </Reveal>
       </Container>
     </footer>
   );

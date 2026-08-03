@@ -46,7 +46,7 @@ export function NotesForm({
         name="notes"
         rows={5}
         defaultValue={notes ?? ""}
-        placeholder="Internal notes — who picked this up, what was discussed, next step…"
+        placeholder="Internal notes: who picked this up, what was discussed, next step…"
         className="min-h-30 resize-y bg-white"
       />
       <div>

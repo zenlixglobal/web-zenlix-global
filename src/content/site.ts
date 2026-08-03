@@ -15,7 +15,12 @@ export type Insight = {
   category: string;
   title: string;
   excerpt: string;
-  href: string;
+  /**
+   * Omit until the article actually exists. The card then renders as a teaser
+   * with no "Read Article" link, rather than shipping an href="#" that scrolls
+   * to the top and reads as a broken link to crawlers.
+   */
+  href?: string;
   image: { src: string; alt: string };
 };
 
@@ -42,15 +47,66 @@ export const contactDetails = {
   addressShort: "[Your Street Address, City, ST]",
 } as const;
 
+/**
+ * EDIT: the facts a US privacy policy has to state precisely.
+ *
+ * Kept out of the prose so the effective date and the retention periods can be
+ * revised without re-reading the whole page. The retention windows are a
+ * *promise*: nothing in the codebase deletes old rows yet, so whatever is set
+ * here needs a matching purge before the policy is accurate.
+ */
+export const legalDetails = {
+  /** The legal entity that controls the data — a policy has to name it. */
+  entity: "[Zenlix Global LLC]",
+  /** Rendered as "Last updated" on /privacy. */
+  effectiveDate: "August 3, 2026",
+  /**
+   * Rendered as "Last updated" on /terms. Separate from the privacy date so
+   * revising one page doesn't silently restate when the other last changed —
+   * the date is what a dispute turns on when someone asks which version they
+   * agreed to.
+   */
+  termsEffectiveDate: "August 3, 2026",
+  /** Rights requests go here; can be the same inbox as contactDetails.email. */
+  privacyEmail: "[privacy@zenlixglobal.com]",
+  /** Toll-free line, or "" to drop the phone method from the rights section. */
+  privacyPhone: "",
+  /**
+   * Governing law for /terms. Must be the state you actually operate from —
+   * naming a state with no connection to the business is how a choice-of-law
+   * clause gets struck out.
+   */
+  governingState: "[Texas]",
+  /** Exclusive venue, phrased to drop straight into the sentence. */
+  governingVenue:
+    "[the state and federal courts located in Collin County, Texas]",
+  /**
+   * The vendor that routes our email, calls, and SMS on our behalf.
+   *
+   * Named in the terms and beside the contact form's submit button because
+   * TCPA consent has to identify who the messages will come from — and carrier
+   * A2P registration asks for the same disclosure. Replace with the partner's
+   * full registered name.
+   */
+  messagingPartner: "Foxbridge Solutions",
+  retention: {
+    inquiries: "[24 months]",
+    candidates: "[36 months]",
+    analytics: "[14 months]",
+  },
+} as const;
+
 /** EDIT: nav menu items / links */
 export const mainNav: NavItem[] = [
   { label: "Expertise", href: "/#services" },
   { label: "Our Firm", href: "/about" },
   { label: "Insights", href: "/#insights" },
-  { label: "Partner With Us", href: "/contact" },
+  // "Partner With Us" was removed from the header — the gold "Hire Talent"
+  // button already sends people to /contact, and two links to the same page
+  // split the click. It still appears in the footer's Company column.
 ];
 
-export const navCta: NavItem = { label: "Hire Talent", href: "/contact" };
+export const navCta: NavItem = { label: "Get in Touch", href: "/contact" };
 
 /** EDIT: hero eyebrow label, headline, and subheading */
 export const hero = {
@@ -58,19 +114,20 @@ export const hero = {
   headline: "We connect ambitious companies with",
   /** Rendered in italic gold as the second half of the headline. */
   headlineAccent: "talent that moves the needle.",
-  lede: "Zenlix Global builds high-performance teams for organizations that refuse to settle for average. Direct hire, contract, and executive search — engineered around your growth, not our quota.",
-  primaryCta: { label: "Hire Talent", href: "/contact" },
-  secondaryCta: { label: "Explore Expertise", href: "/#services" },
+  lede: "Zenlix Global builds high-performance teams for organizations that refuse to settle for average. Direct hire, contract, and executive search, engineered around your growth, not our quota.",
+  primaryCta: { label: "Get in Touch", href: "/contact" },
+  // No secondary CTA: the hero asks for one thing. The services section is a
+  // scroll away, so a button to it only competed with "Get in Touch".
   /** EDIT: replace with your real numbers, or delete any stat you lack data for. */
   stats: [
-    { value: "[92%]", label: "Retention Rate" },
-    { value: "[150+]", label: "Enterprise Clients" },
-    { value: "[10 Days]", label: "Avg. Time-to-Fill" },
+    { value: "92%", label: "Retention Rate" },
+    { value: "550+", label: "Enterprise Clients" },
+    { value: "10 Days", label: "Avg. Time-to-Fill" },
   ] satisfies Stat[],
   /** EDIT: hero side panel image + caption. */
   panel: {
     caption: "Client Spotlight",
-    body: "From a single embedded recruiter to a fully outsourced hiring team — we scale with you as your headcount plans change quarter to quarter.",
+    body: "From a single embedded recruiter to a fully outsourced hiring team, we scale with you as your headcount plans change quarter to quarter.",
     image: {
       src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800",
       alt: "Team collaborating in a modern office",
@@ -95,7 +152,7 @@ export const servicesSection = {
       num: "02",
       title: "Contract Staffing",
       description:
-        "Flexible, project-based talent that ramps up or down with your roadmap — no long-term overhead.",
+        "Flexible, project-based talent that ramps up or down with your roadmap, with no long-term overhead.",
     },
     {
       num: "03",
@@ -121,18 +178,30 @@ export const servicesSection = {
       description:
         "An embedded recruitment team that runs inside your process, under your brand, at enterprise scale.",
     },
-    {
+     {
       num: "07",
-      title: "Payroll & Compliance",
+      title: "Healthcare Staffing",
       description:
-        "Employer-of-record and payrolling services so you can engage talent quickly without the administrative lift.",
+        "Healthcare staffing: Specialized clinical and administrative staffing with a focus on compliance and quality care.",
     },
     {
       num: "08",
-      title: "Workforce Consulting",
+      title: "BPS & BPO Solutions",
       description:
-        "Headcount planning, market compensation data, and hiring-pipeline strategy for fast-scaling teams.",
+        "Business process outsourcing and shared services solutions, optimizing operational efficiency and cost-effectiveness.",
     },
+    // {
+    //   num: "07",
+    //   title: "Payroll & Compliance",
+    //   description:
+    //     "Employer-of-record and payrolling services so you can engage talent quickly without the administrative lift.",
+    // },
+    // {
+    //   num: "08",
+    //   title: "Workforce Consulting",
+    //   description:
+    //     "Headcount planning, market compensation data, and hiring-pipeline strategy for fast-scaling teams.",
+    // },
   ] satisfies Service[],
 } as const;
 
@@ -140,8 +209,7 @@ export const servicesSection = {
 export const advantage = {
   eyebrow: "The Zenlix Advantage",
   heading: "We recruit the people who aren't applying anywhere.",
-  body: "Job boards surface who's looking. Our network reaches the top performers who are quietly open to the right move — the candidates your competitors never see.",
-  badge: { value: "[10+]", label: "Years in Talent" },
+  body: "Job boards surface who's looking. Our network reaches the top performers who are quietly open to the right move: the candidates your competitors never see.",
   image: {
     src: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=800",
     alt: "Recruiter reviewing candidate profiles",
@@ -158,59 +226,77 @@ export const advantage = {
 /** EDIT: mid-page call-to-action strip. */
 export const ctaStrip = {
   heading: "Ready to build a team that outperforms?",
-  cta: { label: "Start the Conversation", href: "/contact" },
+  cta: { label: "Break the Ice", href: "/contact" },
 } as const;
 
 /** EDIT: social proof + insights. */
 export const insightsSection = {
   eyebrow: "Social Proof & Insights",
-  heading: "What our clients say — and what we're watching in the market.",
-  /** EDIT: sample quotes, not real clients. Replace once you have permission to publish them. */
+  heading: "What our clients say, and what we're watching in the market.",
+  /**
+   * !! SAMPLE COPY — INVENTED, NOT REAL CLIENTS. REPLACE BEFORE LAUNCH. !!
+   *
+   * These exist so the section can be designed and reviewed with realistic
+   * text in place. The companies are fictional and the quotes were written
+   * here, not said by anyone.
+   *
+   * Publishing invented testimonials as if they were real is banned outright
+   * by the Digital Markets, Competition and Consumers Act 2024 (fake consumer
+   * reviews), and the ASA treats it as misleading advertising. Swap in real,
+   * attributable quotes you have written permission to publish, or delete the
+   * testimonials array and the section renders without it.
+   */
   testimonials: [
     {
-      quote: "[Insert a real client testimonial quote here.]",
-      role: "[Client Job Title]",
-      company: "[Client Company or Industry]",
+      quote:
+        "We had two staff engineer roles open for five months. Zenlix filled both inside six weeks, and a year on, both hires are still with us.",
+      role: "VP of Engineering",
+      company: "Northwind Logistics",
     },
     {
-      quote: "[Insert a second client testimonial quote here.]",
-      role: "[Client Job Title]",
-      company: "[Client Company or Industry]",
+      quote:
+        "We needed a compliance lead who had actually run an FCA audit, not someone who had read about one. Zenlix sent three CVs and we hired from that first shortlist.",
+      role: "Chief Operating Officer",
+      company: "Calderwood Financial",
     },
   ] satisfies Testimonial[],
-  /** EDIT: replace `href` with the real article URL, or delete a card. */
+  /**
+   * Add `href` to a card once the article is published and the "Read Article"
+   * link appears on it automatically. Until then these are teasers, which is
+   * why none of them link anywhere.
+   */
   articles: [
     {
-      category: "[Category]",
-      title: "[Article headline goes here]",
-      excerpt: "[One or two sentence summary of the article goes here.]",
-      href: "#",
+      category: "Hiring Trends",
+      title: "Why senior engineering roles sit open for five months",
+      excerpt:
+        "It is almost never candidate supply. It is a job spec written for someone who does not exist, a five-stage interview loop, and two weeks of silence before the offer.",
       image: {
         src: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600",
-        alt: "Engineers collaborating around a laptop",
+        alt: "Two engineers reviewing code together at a desk",
       },
     },
     {
-      category: "[Category]",
-      title: "[Article headline goes here]",
-      excerpt: "[One or two sentence summary of the article goes here.]",
-      href: "#",
+      category: "Salary Guide",
+      title: "What contract IT talent really costs in 2026",
+      excerpt:
+        "Bill rates are the number everyone negotiates. Conversion fees, ramp time, and the cost of a seat left empty for a quarter are the ones that decide the budget.",
       image: {
         src: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=600",
-        alt: "Financial analyst reviewing charts",
+        alt: "Financial paperwork and a calculator on a desk",
       },
     },
     {
-      category: "[Category]",
-      title: "[Article headline goes here]",
-      excerpt: "[One or two sentence summary of the article goes here.]",
-      href: "#",
+      category: "Executive Search",
+      title: "Replacing a leader without telling the market you are",
+      excerpt:
+        "Confidential search protects three parties at once: the incumbent still in the seat, the team who should not hear it as a rumour, and the candidate risking their current role to talk to you.",
       image: {
         src: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600",
-        alt: "Executive leadership meeting",
+        alt: "Two colleagues celebrating across a desk in an office",
       },
     },
-  ] satisfies Insight[],
+  ] as Insight[],
 } as const;
 
 /** EDIT: /about page copy. */
@@ -218,25 +304,127 @@ export const aboutPage = {
   eyebrow: "Our Firm",
   heading: "Built by recruiters who wanted to do it differently.",
   intro:
-    "Zenlix Global exists because too many staffing firms optimize for speed over fit. We optimize for fit first — and speed follows.",
+    "Zenlix Global exists because too many staffing firms optimize for speed over fit. We optimize for fit first, and speed follows.",
+
+  /**
+   * !! DRAFT NARRATIVE — HAS TO BE CONFIRMED BY THE FOUNDERS BEFORE LAUNCH. !!
+   *
+   * The shape of this story (a first search that went badly, the lesson taken
+   * from it, the firm built around that lesson) is written to be read out loud
+   * and corrected, not published as-is. Everything a reader could check —
+   * the year, the founder's name, the city, the practice list — is wrapped in
+   * [square brackets] so nothing unverified ships by accident.
+   *
+   * `paragraphs` is an array so the prose can be re-cut without touching the
+   * component; the first entry gets the drop cap.
+   */
   story: {
     eyebrow: "Our Story",
-    heading: "[A short paragraph on how and why your firm was founded.]",
-    body: "[Add a few more sentences here about your team's background, the industries you focus on, and what makes your approach different. This is a good place for a founder's note or a brief company timeline.]",
+    heading: "It started with a role that had been open for nine months.",
+    lede: "Not with a business plan. With a hiring manager who was out of patience, and a shortlist that had clearly been assembled by someone who had never spoken to the team.",
+    paragraphs: [
+      "In [2019], our founder took on a search three firms had already walked away from: one senior engineer, for a team that had lost two people in a quarter. The brief ran four pages. The thing that actually mattered — someone who could hold a team steady while the roadmap moved underneath it — was not written down anywhere in them. It took two weeks of listening to hear it, and eight days after that to find the person.",
+      "That hire is still in the seat. And the lesson stuck: roles rarely stay open because there are no good people. They stay open because nobody slowed down long enough to ask what the role really needed.",
+      "So we built the firm we wished we had been calling. Small enough that whoever takes your brief is whoever reads the resumes. Direct enough to tell you when the salary band and the seniority do not add up. Patient enough to send three candidates instead of thirty, and stubborn enough to keep looking until the right one turns up.",
+      "We are bigger now — [a team of 20+] across [IT, non-IT, healthcare, and executive search] — and the rule has not moved. We do not forward a resume we would not put our own name on. We call at ninety days, because a placement that does not last was never a placement. And we still turn down searches we do not believe we can do well, which costs us fees and buys us the only thing that compounds in this business: people who pick up when we call.",
+    ],
+    pullQuote:
+      "We would rather lose the fee than send you someone we will be apologizing for in six months.",
+    signature: {
+      caption: "A note from our founder",
+      name: "[Founder Name]",
+      role: "[Founder & Managing Partner], Zenlix Global",
+    },
+    image: {
+      src: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800",
+      alt: "Two colleagues talking across a table in a bright meeting room",
+    },
+    /** The checkable facts, kept out of the prose so they are easy to correct. */
+    facts: [
+      { label: "Founded", value: "[2019]" },
+      { label: "Headquarters", value: "[Plano, Texas]" },
+      { label: "Coverage", value: "[Nationwide, US]" },
+      { label: "Practices", value: "Staffing, Search, RPO" },
+    ],
+  },
+
+  /** EDIT: the timeline. Add or drop chapters freely — the rail redraws. */
+  milestones: {
+    eyebrow: "How We Got Here",
+    heading: "The version we would give you over coffee.",
+    intro:
+      "No overnight scale story. Just a series of moments where a client asked for something we did not offer yet, and we decided to learn it properly rather than fake it.",
+    items: [
+      {
+        year: "[2019]",
+        title: "One desk, one search at a time",
+        body: "Zenlix starts as a single recruiter taking the searches other firms had handed back. No database worth the name, no brand — only the willingness to sit in a room until the brief made sense.",
+      },
+      {
+        year: "[2021]",
+        title: "The first embedded team",
+        body: "A client asks us to stop sending resumes and start running their hiring instead. Two of our recruiters move inside their process, under their brand. That engagement became our RPO practice.",
+      },
+      {
+        year: "[2023]",
+        title: "Past engineering",
+        body: "Finance, operations, and clinical roles start arriving through the same door. Rather than pretend one recruiter can cover all of it, we build the non-IT and healthcare desks and staff them with people who have worked those functions.",
+      },
+      {
+        year: "[2025]",
+        title: "A firm, not a founder",
+        body: "Executive search becomes its own practice, with the confidentiality and reference depth those roles demand — and the hardest searches stop depending on one person being free to run them.",
+      },
+      {
+        year: "Today",
+        title: "Still picking up the phone",
+        body: "Same test as the first search: would we make this introduction if the candidate were a friend and the client were our own team? If the answer is no, the shortlist is not ready.",
+      },
+    ],
+  },
+
+  /** EDIT: the working principles shown as the hairline grid on /about. */
+  principles: {
+    eyebrow: "How We Work",
+    heading: "Four promises we would rather be held to than advertise.",
+    intro:
+      "Every staffing firm says it is different. These are the specific, checkable things we do differently — hold us to them.",
+    items: [
+      {
+        num: "01",
+        title: "You will hear what we actually think",
+        body: "If the band is below market, the interview loop is too long, or the role as written describes two different people, you will hear it in the first conversation — not after eight weeks of silence and an apologetic status call.",
+      },
+      {
+        num: "02",
+        title: "Whoever takes the brief reads the resumes",
+        body: "No handover to a delivery team you have never met. The recruiter in your intake call is the one building the shortlist, and the one who has to defend every name on it.",
+      },
+      {
+        num: "03",
+        title: "Three candidates, not thirty",
+        body: "A shortlist is a recommendation. If we send a stack for you to sort through, we have quietly moved our half of the work onto your calendar.",
+      },
+      {
+        num: "04",
+        title: "We are still here at ninety days",
+        body: "We check in with both sides a quarter after the start date — and when a placement is not working, we say so first and fix it rather than wait to be called.",
+      },
+    ],
   },
 } as const;
 
 /** EDIT: /contact page copy. */
 export const contactPage = {
-  eyebrow: "Partner With Us",
+  eyebrow: "Get in Touch",
   heading: "Let's talk about your next hire.",
   intro:
     "Whether you're building a team or looking for your next role, tell us a bit about what you need and we'll follow up shortly.",
   formEyebrow: "Connect With Our Team",
   formHeading: "Start the conversation.",
   formIntro:
-    "Discreet, professional, and entirely focused on your outcome — whether you're hiring or looking to make your next move.",
-  note: "Placeholder contact details — replace the bracketed text in src/content/site.ts with your real phone number, email, and office address before publishing.",
+    "Discreet, professional, and entirely focused on your outcome, whether you're hiring or looking to make your next move.",
+  note: "Placeholder contact details. Replace the bracketed text in src/content/site.ts with your real phone number, email, and office address before publishing.",
 } as const;
 
 /**
@@ -285,7 +473,7 @@ export function inquiryLabel(value: string): string {
 /** EDIT: footer. */
 export const footer = {
   tagline:
-    "[Elevating businesses through strategic talent acquisition and executive search across North America.]",
+    "Elevating businesses through strategic talent acquisition and executive search across the globe.",
   columns: [
     {
       heading: "Company",
@@ -293,17 +481,15 @@ export const footer = {
         { label: "Our Firm", href: "/about" },
         { label: "Practice Areas", href: "/#services" },
         { label: "Client Success", href: "/#insights" },
-        { label: "Partner With Us", href: "/contact" },
+        { label: "Get in Touch", href: "/contact" },
       ] satisfies NavItem[],
     },
   ],
-  newsletter: {
-    heading: "Industry Insights",
-    body: "Subscribe for hiring trends, salary guides, and top-talent alerts.",
-    placeholder: "you@company.com",
-    cta: "Join",
-  },
-  /** EDIT: replace with real pages once written. */
+  /**
+   * Rendered as the footer's "Legal" column, not as fine print under the
+   * copyright line: consent and data-handling terms people are told they agree
+   * to at the contact form need to be findable without hunting.
+   */
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },

@@ -48,7 +48,23 @@ function writeStorage(key: string, value: string): void {
  */
 export function isTrackingDisabled(): boolean {
   if (typeof window === "undefined") return true;
-  if (readStorage(OPT_OUT_KEY) === "1") return true;
+  return isTrackingOptedOut() || hasBrowserPrivacySignal();
+}
+
+/**
+ * The stored opt-out on its own. The privacy-page toggle needs this separately
+ * from {@link hasBrowserPrivacySignal} — a browser sending GPC already stops
+ * tracking, and showing that as "you chose this" would misreport whose setting
+ * it is.
+ */
+export function isTrackingOptedOut(): boolean {
+  if (typeof window === "undefined") return false;
+  return readStorage(OPT_OUT_KEY) === "1";
+}
+
+/** A browser-level Do Not Track / Global Privacy Control signal. */
+export function hasBrowserPrivacySignal(): boolean {
+  if (typeof window === "undefined") return false;
 
   const nav = window.navigator as Navigator & { globalPrivacyControl?: boolean };
   return nav.doNotTrack === "1" || nav.globalPrivacyControl === true;
@@ -153,7 +169,7 @@ export function sendBeacon(input: BeaconInput, { unloading = false } = {}): void
 }
 
 /**
- * Records a named conversion. Called from the contact and newsletter forms so
+ * Records a named conversion. Called from the contact form so
  * the dashboard can tie enquiries back to the traffic that produced them.
  */
 export function trackEvent(

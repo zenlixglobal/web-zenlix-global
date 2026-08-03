@@ -52,15 +52,15 @@ export function Logo({
       href="/"
       onClick={onNavigate}
       className={cn(
-        "flex items-center gap-2.5 font-heading text-lg font-semibold text-white sm:text-[21px]",
+        "flex items-center gap-2.5 font-heading text-[34px] font-semibold text-white",
         "rounded-xs outline-offset-4 focus-visible:outline-2 focus-visible:outline-gold-500",
         className,
       )}
     >
       <LogoMark
-        size={40}
+        size={55}
         priority
-        className={cn("size-9 sm:size-10", markClassName)}
+        className={cn("size-[55px]", markClassName)}
       />
       <span>{site.name}</span>
     </Link>

@@ -40,13 +40,6 @@ export type ContactSubmission = {
   email_sent_at: string | null;
 };
 
-export type NewsletterSubscriber = {
-  id: string;
-  created_at: string;
-  email: string;
-  unsubscribed_at: string | null;
-};
-
 /** Mirrors supabase/migrations/0002_analytics.sql. */
 export type AnalyticsSession = {
   id: string;
@@ -91,6 +84,37 @@ export type AnalyticsEvent = {
   props: Record<string, unknown>;
 };
 
+/** Mirrors supabase/migrations/0003_insights.sql. */
+export type InsightArticle = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  slug: string;
+  title: string;
+  category: string;
+  excerpt: string;
+  body: string;
+  image_url: string | null;
+  image_alt: string | null;
+  author: string | null;
+  published: boolean;
+  published_at: string | null;
+};
+
+/** Fields the admin form owns; the rest are set by the database. */
+export type InsightArticleInput = Pick<
+  InsightArticle,
+  | "slug"
+  | "title"
+  | "category"
+  | "excerpt"
+  | "body"
+  | "image_url"
+  | "image_alt"
+  | "author"
+  | "published"
+>;
+
 /** None of these tables have foreign-key joins the client needs to traverse. */
 type NoRelationships = [];
 
@@ -107,12 +131,6 @@ export type Database = {
             Pick<ContactSubmission, "status" | "admin_notes" | "email_sent_at">
           >;
         Update: Partial<ContactSubmission>;
-        Relationships: NoRelationships;
-      };
-      newsletter_subscribers: {
-        Row: NewsletterSubscriber;
-        Insert: Pick<NewsletterSubscriber, "email">;
-        Update: Partial<NewsletterSubscriber>;
         Relationships: NoRelationships;
       };
       admin_users: {
@@ -139,6 +157,12 @@ export type Database = {
         Row: AnalyticsEvent;
         Insert: never;
         Update: never;
+        Relationships: NoRelationships;
+      };
+      insight_articles: {
+        Row: InsightArticle;
+        Insert: InsightArticleInput;
+        Update: Partial<InsightArticleInput>;
         Relationships: NoRelationships;
       };
     };

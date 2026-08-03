@@ -17,7 +17,6 @@ export type BeaconType = (typeof BEACON_TYPES)[number];
 export const TRACKED_EVENTS = [
   "contact_submitted",
   "contact_failed",
-  "newsletter_subscribed",
 ] as const;
 export type TrackedEvent = (typeof TRACKED_EVENTS)[number];
 

@@ -138,8 +138,9 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
-    /* Offset in-page anchors so the fixed header never covers a heading. */
-    scroll-padding-top: 5.5rem;
+    /* Offset in-page anchors so the fixed header never covers a heading.
+       Must stay above the header's tallest state (86px). */
+    scroll-padding-top: 6.5rem;
     -webkit-text-size-adjust: 100%;
   }
 

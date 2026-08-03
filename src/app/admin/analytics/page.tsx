@@ -168,12 +168,6 @@ export default async function AnalyticsPage({
           current={overview.sessions}
           previous={overview.prev_sessions}
         />
-        <StatTile
-          label="Newsletter signups"
-          value={formatCompact(enquiries.newsletterSignups)}
-          current={enquiries.newsletterSignups}
-          previous={enquiries.previousNewsletterSignups}
-        />
       </div>
 
       <div className="mb-6 grid gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
@@ -270,8 +264,8 @@ export default async function AnalyticsPage({
       </div>
 
       <p className="mt-6 text-xs text-slate-muted">
-        Visitors are counted with a daily-rotating, non-reversible hash — no
-        cookies and no cross-day tracking — so a multi-day range totals daily
+        Visitors are counted with a daily-rotating, non-reversible hash, with no
+        cookies and no cross-day tracking, so a multi-day range totals daily
         uniques. Enquiry counts come from the enquiries table itself, which is
         why they can exceed tracked conversions when a visitor has Do Not Track
         enabled.

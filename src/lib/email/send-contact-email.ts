@@ -38,7 +38,7 @@ export async function sendContactEmail(
       from: env.contactFromEmail(),
       to: env.contactToEmails(),
       replyTo: input.email,
-      subject: `New enquiry — ${inquiry} — ${input.company}`,
+      subject: `New enquiry: ${inquiry} (${input.company})`,
       text: plainText({ fullName, inquiry, input, meta }),
       html: html({ fullName, inquiry, input, meta }),
     });
