@@ -171,7 +171,7 @@ export const advantage = {
 /** EDIT: mid-page call-to-action strip. */
 export const ctaStrip = {
   heading: "Ready to build a team that outperforms?",
-  cta: { label: "Start the Conversation", href: "/contact" },
+  cta: { label: "Break the Ice", href: "/contact" },
 } as const;
 
 /** EDIT: social proof + insights. */
