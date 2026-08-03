@@ -11,7 +11,10 @@ export function SiteHeader() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/14 bg-navy-900/92 supports-[backdrop-filter]:backdrop-blur-[10px]">
       {/* Taller than the original 64/78 to clear the 55px mark without the
           logo touching the border. */}
-      <Container className="flex h-[74px] items-center gap-4 sm:h-[86px]">
+      {/* The gap only ever separates the nav from the CTA: the logo is held
+          away by the nav's `ms-auto`, and below md both the nav and the button
+          are hidden. So it can widen at md+ without affecting anything else. */}
+      <Container className="flex h-[74px] items-center gap-4 sm:h-[86px] md:gap-9 lg:gap-12">
         <Logo />
 
         {/* `ms-auto` pushes the nav and the CTA to the right edge as one group,

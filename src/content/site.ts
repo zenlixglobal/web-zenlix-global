@@ -66,7 +66,7 @@ export const hero = {
   /** EDIT: replace with your real numbers, or delete any stat you lack data for. */
   stats: [
     { value: "92%", label: "Retention Rate" },
-    { value: "150+", label: "Enterprise Clients" },
+    { value: "550+", label: "Enterprise Clients" },
     { value: "10 Days", label: "Avg. Time-to-Fill" },
   ] satisfies Stat[],
   /** EDIT: hero side panel image + caption. */
@@ -123,18 +123,24 @@ export const servicesSection = {
       description:
         "An embedded recruitment team that runs inside your process, under your brand, at enterprise scale.",
     },
-    {
+     {
       num: "07",
-      title: "Payroll & Compliance",
+      title: "Healthcare Staffing",
       description:
-        "Employer-of-record and payrolling services so you can engage talent quickly without the administrative lift.",
+        "Specialized staffing for healthcare organizations, including clinical and administrative roles, ensuring compliance and quality care.",
     },
-    {
-      num: "08",
-      title: "Workforce Consulting",
-      description:
-        "Headcount planning, market compensation data, and hiring-pipeline strategy for fast-scaling teams.",
-    },
+    // {
+    //   num: "07",
+    //   title: "Payroll & Compliance",
+    //   description:
+    //     "Employer-of-record and payrolling services so you can engage talent quickly without the administrative lift.",
+    // },
+    // {
+    //   num: "08",
+    //   title: "Workforce Consulting",
+    //   description:
+    //     "Headcount planning, market compensation data, and hiring-pipeline strategy for fast-scaling teams.",
+    // },
   ] satisfies Service[],
 } as const;
 
