@@ -47,6 +47,55 @@ export const contactDetails = {
   addressShort: "[Your Street Address, City, ST]",
 } as const;
 
+/**
+ * EDIT: the facts a US privacy policy has to state precisely.
+ *
+ * Kept out of the prose so the effective date and the retention periods can be
+ * revised without re-reading the whole page. The retention windows are a
+ * *promise*: nothing in the codebase deletes old rows yet, so whatever is set
+ * here needs a matching purge before the policy is accurate.
+ */
+export const legalDetails = {
+  /** The legal entity that controls the data — a policy has to name it. */
+  entity: "[Zenlix Global LLC]",
+  /** Rendered as "Last updated" on /privacy. */
+  effectiveDate: "August 3, 2026",
+  /**
+   * Rendered as "Last updated" on /terms. Separate from the privacy date so
+   * revising one page doesn't silently restate when the other last changed —
+   * the date is what a dispute turns on when someone asks which version they
+   * agreed to.
+   */
+  termsEffectiveDate: "August 3, 2026",
+  /** Rights requests go here; can be the same inbox as contactDetails.email. */
+  privacyEmail: "[privacy@zenlixglobal.com]",
+  /** Toll-free line, or "" to drop the phone method from the rights section. */
+  privacyPhone: "",
+  /**
+   * Governing law for /terms. Must be the state you actually operate from —
+   * naming a state with no connection to the business is how a choice-of-law
+   * clause gets struck out.
+   */
+  governingState: "[Texas]",
+  /** Exclusive venue, phrased to drop straight into the sentence. */
+  governingVenue:
+    "[the state and federal courts located in Collin County, Texas]",
+  /**
+   * The vendor that routes our email, calls, and SMS on our behalf.
+   *
+   * Named in the terms and beside the contact form's submit button because
+   * TCPA consent has to identify who the messages will come from — and carrier
+   * A2P registration asks for the same disclosure. Replace with the partner's
+   * full registered name.
+   */
+  messagingPartner: "Foxbridge Solutions",
+  retention: {
+    inquiries: "[24 months]",
+    candidates: "[36 months]",
+    analytics: "[14 months]",
+  },
+} as const;
+
 /** EDIT: nav menu items / links */
 export const mainNav: NavItem[] = [
   { label: "Expertise", href: "/#services" },
@@ -67,7 +116,8 @@ export const hero = {
   headlineAccent: "talent that moves the needle.",
   lede: "Zenlix Global builds high-performance teams for organizations that refuse to settle for average. Direct hire, contract, and executive search, engineered around your growth, not our quota.",
   primaryCta: { label: "Get in Touch", href: "/contact" },
-  secondaryCta: { label: "Explore Expertise", href: "/#services" },
+  // No secondary CTA: the hero asks for one thing. The services section is a
+  // scroll away, so a button to it only competed with "Get in Touch".
   /** EDIT: replace with your real numbers, or delete any stat you lack data for. */
   stats: [
     { value: "92%", label: "Retention Rate" },
@@ -205,9 +255,9 @@ export const insightsSection = {
     },
     {
       quote:
-        "They pushed back on our job spec before sourcing a single candidate. That conversation is the reason the shortlist was three people instead of thirty.",
-      role: "Head of Talent Acquisition",
-      company: "Meridian Health Group",
+        "We needed a compliance lead who had actually run an FCA audit, not someone who had read about one. Zenlix sent three CVs and we hired from that first shortlist.",
+      role: "Chief Operating Officer",
+      company: "Calderwood Financial",
     },
   ] satisfies Testimonial[],
   /**
@@ -255,16 +305,118 @@ export const aboutPage = {
   heading: "Built by recruiters who wanted to do it differently.",
   intro:
     "Zenlix Global exists because too many staffing firms optimize for speed over fit. We optimize for fit first, and speed follows.",
+
+  /**
+   * !! DRAFT NARRATIVE — HAS TO BE CONFIRMED BY THE FOUNDERS BEFORE LAUNCH. !!
+   *
+   * The shape of this story (a first search that went badly, the lesson taken
+   * from it, the firm built around that lesson) is written to be read out loud
+   * and corrected, not published as-is. Everything a reader could check —
+   * the year, the founder's name, the city, the practice list — is wrapped in
+   * [square brackets] so nothing unverified ships by accident.
+   *
+   * `paragraphs` is an array so the prose can be re-cut without touching the
+   * component; the first entry gets the drop cap.
+   */
   story: {
     eyebrow: "Our Story",
-    heading: "[A short paragraph on how and why your firm was founded.]",
-    body: "[Add a few more sentences here about your team's background, the industries you focus on, and what makes your approach different. This is a good place for a founder's note or a brief company timeline.]",
+    heading: "It started with a role that had been open for nine months.",
+    lede: "Not with a business plan. With a hiring manager who was out of patience, and a shortlist that had clearly been assembled by someone who had never spoken to the team.",
+    paragraphs: [
+      "In [2019], our founder took on a search three firms had already walked away from: one senior engineer, for a team that had lost two people in a quarter. The brief ran four pages. The thing that actually mattered — someone who could hold a team steady while the roadmap moved underneath it — was not written down anywhere in them. It took two weeks of listening to hear it, and eight days after that to find the person.",
+      "That hire is still in the seat. And the lesson stuck: roles rarely stay open because there are no good people. They stay open because nobody slowed down long enough to ask what the role really needed.",
+      "So we built the firm we wished we had been calling. Small enough that whoever takes your brief is whoever reads the resumes. Direct enough to tell you when the salary band and the seniority do not add up. Patient enough to send three candidates instead of thirty, and stubborn enough to keep looking until the right one turns up.",
+      "We are bigger now — [a team of 20+] across [IT, non-IT, healthcare, and executive search] — and the rule has not moved. We do not forward a resume we would not put our own name on. We call at ninety days, because a placement that does not last was never a placement. And we still turn down searches we do not believe we can do well, which costs us fees and buys us the only thing that compounds in this business: people who pick up when we call.",
+    ],
+    pullQuote:
+      "We would rather lose the fee than send you someone we will be apologizing for in six months.",
+    signature: {
+      caption: "A note from our founder",
+      name: "[Founder Name]",
+      role: "[Founder & Managing Partner], Zenlix Global",
+    },
+    image: {
+      src: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800",
+      alt: "Two colleagues talking across a table in a bright meeting room",
+    },
+    /** The checkable facts, kept out of the prose so they are easy to correct. */
+    facts: [
+      { label: "Founded", value: "[2019]" },
+      { label: "Headquarters", value: "[Plano, Texas]" },
+      { label: "Coverage", value: "[Nationwide, US]" },
+      { label: "Practices", value: "Staffing, Search, RPO" },
+    ],
+  },
+
+  /** EDIT: the timeline. Add or drop chapters freely — the rail redraws. */
+  milestones: {
+    eyebrow: "How We Got Here",
+    heading: "The version we would give you over coffee.",
+    intro:
+      "No overnight scale story. Just a series of moments where a client asked for something we did not offer yet, and we decided to learn it properly rather than fake it.",
+    items: [
+      {
+        year: "[2019]",
+        title: "One desk, one search at a time",
+        body: "Zenlix starts as a single recruiter taking the searches other firms had handed back. No database worth the name, no brand — only the willingness to sit in a room until the brief made sense.",
+      },
+      {
+        year: "[2021]",
+        title: "The first embedded team",
+        body: "A client asks us to stop sending resumes and start running their hiring instead. Two of our recruiters move inside their process, under their brand. That engagement became our RPO practice.",
+      },
+      {
+        year: "[2023]",
+        title: "Past engineering",
+        body: "Finance, operations, and clinical roles start arriving through the same door. Rather than pretend one recruiter can cover all of it, we build the non-IT and healthcare desks and staff them with people who have worked those functions.",
+      },
+      {
+        year: "[2025]",
+        title: "A firm, not a founder",
+        body: "Executive search becomes its own practice, with the confidentiality and reference depth those roles demand — and the hardest searches stop depending on one person being free to run them.",
+      },
+      {
+        year: "Today",
+        title: "Still picking up the phone",
+        body: "Same test as the first search: would we make this introduction if the candidate were a friend and the client were our own team? If the answer is no, the shortlist is not ready.",
+      },
+    ],
+  },
+
+  /** EDIT: the working principles shown as the hairline grid on /about. */
+  principles: {
+    eyebrow: "How We Work",
+    heading: "Four promises we would rather be held to than advertise.",
+    intro:
+      "Every staffing firm says it is different. These are the specific, checkable things we do differently — hold us to them.",
+    items: [
+      {
+        num: "01",
+        title: "You will hear what we actually think",
+        body: "If the band is below market, the interview loop is too long, or the role as written describes two different people, you will hear it in the first conversation — not after eight weeks of silence and an apologetic status call.",
+      },
+      {
+        num: "02",
+        title: "Whoever takes the brief reads the resumes",
+        body: "No handover to a delivery team you have never met. The recruiter in your intake call is the one building the shortlist, and the one who has to defend every name on it.",
+      },
+      {
+        num: "03",
+        title: "Three candidates, not thirty",
+        body: "A shortlist is a recommendation. If we send a stack for you to sort through, we have quietly moved our half of the work onto your calendar.",
+      },
+      {
+        num: "04",
+        title: "We are still here at ninety days",
+        body: "We check in with both sides a quarter after the start date — and when a placement is not working, we say so first and fix it rather than wait to be called.",
+      },
+    ],
   },
 } as const;
 
 /** EDIT: /contact page copy. */
 export const contactPage = {
-  eyebrow: "Partner With Us",
+  eyebrow: "Get in Touch",
   heading: "Let's talk about your next hire.",
   intro:
     "Whether you're building a team or looking for your next role, tell us a bit about what you need and we'll follow up shortly.",
@@ -321,7 +473,7 @@ export function inquiryLabel(value: string): string {
 /** EDIT: footer. */
 export const footer = {
   tagline:
-    "[Elevating businesses through strategic talent acquisition and executive search across North America.]",
+    "Elevating businesses through strategic talent acquisition and executive search across the globe.",
   columns: [
     {
       heading: "Company",
@@ -329,17 +481,15 @@ export const footer = {
         { label: "Our Firm", href: "/about" },
         { label: "Practice Areas", href: "/#services" },
         { label: "Client Success", href: "/#insights" },
-        { label: "Partner With Us", href: "/contact" },
+        { label: "Get in Touch", href: "/contact" },
       ] satisfies NavItem[],
     },
   ],
-  newsletter: {
-    heading: "Industry Insights",
-    body: "Subscribe for hiring trends, salary guides, and top-talent alerts.",
-    placeholder: "you@company.com",
-    cta: "Join",
-  },
-  /** EDIT: replace with real pages once written. */
+  /**
+   * Rendered as the footer's "Legal" column, not as fine print under the
+   * copyright line: consent and data-handling terms people are told they agree
+   * to at the contact form need to be findable without hunting.
+   */
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },

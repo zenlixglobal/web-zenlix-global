@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/site/container";
+import { HeaderShell } from "@/components/site/header-shell";
 import { Logo } from "@/components/site/logo";
 import { MobileNav } from "@/components/site/mobile-nav";
 import { Button } from "@/components/ui/button";
@@ -8,13 +9,15 @@ import { mainNav, navCta } from "@/content/site";
 
 export function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/14 bg-navy-900/92 supports-[backdrop-filter]:backdrop-blur-[10px]">
+    <HeaderShell>
       {/* Taller than the original 64/78 to clear the 55px mark without the
           logo touching the border. */}
       {/* The gap only ever separates the nav from the CTA: the logo is held
           away by the nav's `ms-auto`, and below md both the nav and the button
           are hidden. So it can widen at md+ without affecting anything else. */}
-      <Container className="flex h-[74px] items-center gap-4 sm:h-[86px] md:gap-9 lg:gap-12">
+      {/* The condensed heights stay under the originals, so the
+          `scroll-padding-top` set for the tallest state still clears the bar. */}
+      <Container className="flex h-[74px] items-center gap-4 transition-[height] duration-300 ease-out group-data-[condensed=true]/header:h-[62px] sm:h-[86px] sm:group-data-[condensed=true]/header:h-[70px] md:gap-9 lg:gap-12">
         <Logo />
 
         {/* `ms-auto` pushes the nav and the CTA to the right edge as one group,
@@ -51,6 +54,6 @@ export function SiteHeader() {
             and CTA above are both hidden — so it needs its own push. */}
         <MobileNav className="ms-auto md:ms-0" />
       </Container>
-    </header>
+    </HeaderShell>
   );
 }

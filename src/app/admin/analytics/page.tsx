@@ -168,12 +168,6 @@ export default async function AnalyticsPage({
           current={overview.sessions}
           previous={overview.prev_sessions}
         />
-        <StatTile
-          label="Newsletter signups"
-          value={formatCompact(enquiries.newsletterSignups)}
-          current={enquiries.newsletterSignups}
-          previous={enquiries.previousNewsletterSignups}
-        />
       </div>
 
       <div className="mb-6 grid gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">

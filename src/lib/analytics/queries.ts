@@ -105,8 +105,6 @@ export type EnquiryReport = {
   previousTotal: number;
   byStatus: Record<SubmissionStatus, number>;
   byInquiryType: AnalyticsBreakdownRow[];
-  newsletterSignups: number;
-  previousNewsletterSignups: number;
 };
 
 const EMPTY_ENQUIRY_REPORT: EnquiryReport = {
@@ -115,8 +113,6 @@ const EMPTY_ENQUIRY_REPORT: EnquiryReport = {
   previousTotal: 0,
   byStatus: { new: 0, in_progress: 0, contacted: 0, archived: 0 },
   byInquiryType: [],
-  newsletterSignups: 0,
-  previousNewsletterSignups: 0,
 };
 
 /**
@@ -141,25 +137,15 @@ export async function fetchEnquiryReport(
       (new Date(range.to).getTime() - new Date(range.from).getTime()),
   ).toISOString();
 
-  const [submissions, newsletter] = await Promise.all([
-    supabase
-      .from("contact_submissions")
-      .select("created_at, status, inquiry_type")
-      .gte("created_at", previousFrom)
-      .lt("created_at", range.to)
-      .order("created_at", { ascending: true }),
-    supabase
-      .from("newsletter_subscribers")
-      .select("created_at")
-      .gte("created_at", previousFrom)
-      .lt("created_at", range.to),
-  ]);
+  const submissions = await supabase
+    .from("contact_submissions")
+    .select("created_at, status, inquiry_type")
+    .gte("created_at", previousFrom)
+    .lt("created_at", range.to)
+    .order("created_at", { ascending: true });
 
-  if (submissions.error || newsletter.error) {
-    console.error(
-      "[analytics] enquiry report failed",
-      submissions.error ?? newsletter.error,
-    );
+  if (submissions.error) {
+    console.error("[analytics] enquiry report failed", submissions.error);
     return EMPTY_ENQUIRY_REPORT;
   }
 
@@ -181,11 +167,6 @@ export async function fetchEnquiryReport(
     report.timestamps.push(row.created_at);
     report.byStatus[row.status] += 1;
     typeCounts.set(row.inquiry_type, (typeCounts.get(row.inquiry_type) ?? 0) + 1);
-  }
-
-  for (const row of newsletter.data ?? []) {
-    if (row.created_at < range.from) report.previousNewsletterSignups += 1;
-    else report.newsletterSignups += 1;
   }
 
   report.byInquiryType = [...typeCounts.entries()]

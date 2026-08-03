@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { MenuIcon } from "lucide-react";
+import { motion } from "motion/react";
 import { useState } from "react";
 
+import { revealVariants, staggerVariants } from "@/components/motion/tokens";
 import { Logo } from "@/components/site/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,26 +63,40 @@ export function MobileNav({ className }: { className?: string }) {
           </SheetDescription>
         </SheetHeader>
 
-        <nav className="flex flex-col px-5 py-2">
+        {/* Radix mounts the panel's contents on open and unmounts them on
+            close, so `animate` replays every time the drawer is opened —
+            no exit choreography or open-state plumbing needed here.
+            `delayChildren` waits out the panel's own slide-in so the links
+            are not travelling while the drawer still is. */}
+        <motion.nav
+          className="flex flex-col px-5 py-2"
+          variants={staggerVariants(0.05, 0.15)}
+          initial="hidden"
+          animate="visible"
+        >
           {mainNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="border-b border-white/8 py-4 text-base font-medium text-navy-fg transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none"
-            >
-              {item.label}
-            </Link>
+            <motion.div key={item.href} variants={revealVariants("left", 16)}>
+              <Link
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="block border-b border-white/8 py-4 text-base font-medium text-navy-fg transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none"
+              >
+                {item.label}
+              </Link>
+            </motion.div>
           ))}
-        </nav>
 
-        <div className="px-5 pb-8">
-          <Button asChild variant="gold" size="xl" className="w-full">
-            <Link href={navCta.href} onClick={() => setOpen(false)}>
-              {navCta.label}
-            </Link>
-          </Button>
-        </div>
+          <motion.div
+            variants={revealVariants("left", 16)}
+            className="px-0 pt-6 pb-8"
+          >
+            <Button asChild variant="gold" size="xl" className="w-full">
+              <Link href={navCta.href} onClick={() => setOpen(false)}>
+                {navCta.label}
+              </Link>
+            </Button>
+          </motion.div>
+        </motion.nav>
       </SheetContent>
     </Sheet>
   );

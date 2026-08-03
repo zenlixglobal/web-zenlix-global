@@ -10,10 +10,8 @@ import { clientIpFrom, rateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
   contactSchema,
-  newsletterSchema,
   readContactValues,
   type FormState,
-  type NewsletterFormState,
 } from "@/lib/validation/contact";
 
 const GENERIC_ERROR =
@@ -125,63 +123,6 @@ export async function submitContactForm(
     return { status: "success", message: SUCCESS_MESSAGE, attempt };
   } catch (error) {
     console.error("[contact] Unexpected failure", error);
-    return fail(GENERIC_ERROR);
-  }
-}
-
-/** Footer newsletter signup. */
-export async function subscribeToNewsletter(
-  prevState: NewsletterFormState,
-  formData: FormData,
-): Promise<NewsletterFormState> {
-  const attempt = (prevState.attempt ?? 0) + 1;
-  // Same React 19 form-reset problem as the contact form: echo the address
-  // back so a rejected signup doesn't blank the field.
-  const email = String(formData.get("email") ?? "").slice(0, 400);
-  const fail = (message: string) =>
-    ({ status: "error", message, email, attempt }) satisfies NewsletterFormState;
-
-  const parsed = newsletterSchema.safeParse({ email });
-
-  if (!parsed.success) {
-    return fail("Enter a valid email address.");
-  }
-
-  const ip = clientIpFrom(await headers());
-  const limit = rateLimit(`newsletter:${ip}`, {
-    limit: 5,
-    windowMs: 10 * 60 * 1000,
-  });
-
-  if (!limit.allowed) {
-    return fail("Too many attempts. Try again later.");
-  }
-
-  if (!isSupabaseConfigured()) {
-    console.error("[newsletter] Supabase is not configured");
-    return fail(GENERIC_ERROR);
-  }
-
-  try {
-    const supabase = createSupabaseAdminClient();
-    const { error } = await supabase
-      .from("newsletter_subscribers")
-      .insert({ email: parsed.data.email });
-
-    // 23505 = unique violation. Already subscribed is a success from the
-    // visitor's point of view, and confirming it doesn't leak anything useful.
-    if (error && error.code !== "23505") {
-      console.error("[newsletter] Supabase insert failed", error);
-      return fail(GENERIC_ERROR);
-    }
-
-    return {
-      status: "success",
-      message: "You're subscribed. Welcome aboard.",
-      attempt,
-    };
-  } catch (error) {
-    console.error("[newsletter] Unexpected failure", error);
     return fail(GENERIC_ERROR);
   }
 }
