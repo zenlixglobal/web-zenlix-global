@@ -1,9 +1,16 @@
 import type { MetadataRoute } from "next";
 
 import { site } from "@/content/site";
+import { fetchInsightSitemapEntries } from "@/lib/insights";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/**
+ * Async because published articles come from the database. Next revalidates
+ * this on demand, so a newly published insight is discoverable without a
+ * rebuild.
+ */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
+  const articles = await fetchInsightSitemapEntries();
 
   return [
     { url: site.url, lastModified, changeFrequency: "monthly", priority: 1 },
@@ -19,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.8,
     },
+    ...articles.map((article) => ({
+      url: `${site.url}/insights/${article.slug}`,
+      lastModified: new Date(article.updated_at),
+      changeFrequency: "yearly" as const,
+      priority: 0.6,
+    })),
     {
       url: `${site.url}/privacy`,
       lastModified,
