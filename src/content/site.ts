@@ -155,7 +155,6 @@ export const advantage = {
   eyebrow: "The Zenlix Advantage",
   heading: "We recruit the people who aren't applying anywhere.",
   body: "Job boards surface who's looking. Our network reaches the top performers who are quietly open to the right move: the candidates your competitors never see.",
-  badge: { value: "[10+]", label: "Years in Talent" },
   image: {
     src: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=800",
     alt: "Recruiter reviewing candidate profiles",

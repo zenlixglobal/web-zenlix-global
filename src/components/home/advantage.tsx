@@ -23,7 +23,7 @@ export function Advantage({
       className="dark bg-navy-900 py-16 text-white sm:py-20 lg:py-28"
     >
       <Container className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-[70px]">
-        <div className="relative">
+        <div>
           <div className="relative h-64 w-full sm:h-90 lg:h-105">
             <Image
               src={advantage.image.src}
@@ -33,17 +33,9 @@ export function Advantage({
               className="object-cover"
             />
           </div>
-          <div className="absolute -bottom-6 left-0 bg-gold-500 px-5 py-4 font-heading text-navy-900 sm:px-[26px] sm:py-[22px] lg:-left-6">
-            <b className="block text-2xl leading-none sm:text-3xl">
-              {advantage.badge.value}
-            </b>
-            <span className="font-mono text-xs tracking-[0.06em] uppercase">
-              {advantage.badge.label}
-            </span>
-          </div>
         </div>
 
-        <div className="pt-8 lg:pt-0">
+        <div>
           <Eyebrow className="mb-3.5">{advantage.eyebrow}</Eyebrow>
           <h2 className="text-[clamp(1.75rem,5vw,2.5rem)] leading-[1.15] text-white">
             {advantage.heading}
