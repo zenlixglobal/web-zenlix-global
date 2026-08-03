@@ -52,7 +52,7 @@ export const mainNav: NavItem[] = [
   // split the click. It still appears in the footer's Company column.
 ];
 
-export const navCta: NavItem = { label: "Hire Talent", href: "/contact" };
+export const navCta: NavItem = { label: "Get in Touch", href: "/contact" };
 
 /** EDIT: hero eyebrow label, headline, and subheading */
 export const hero = {
@@ -61,7 +61,7 @@ export const hero = {
   /** Rendered in italic gold as the second half of the headline. */
   headlineAccent: "talent that moves the needle.",
   lede: "Zenlix Global builds high-performance teams for organizations that refuse to settle for average. Direct hire, contract, and executive search, engineered around your growth, not our quota.",
-  primaryCta: { label: "Hire Talent", href: "/contact" },
+  primaryCta: { label: "Get in Touch", href: "/contact" },
   secondaryCta: { label: "Explore Expertise", href: "/#services" },
   /** EDIT: replace with your real numbers, or delete any stat you lack data for. */
   stats: [
@@ -127,7 +127,13 @@ export const servicesSection = {
       num: "07",
       title: "Healthcare Staffing",
       description:
-        "Specialized staffing for healthcare organizations, including clinical and administrative roles, ensuring compliance and quality care.",
+        "Healthcare staffing: Specialized clinical and administrative staffing with a focus on compliance and quality care.",
+    },
+    {
+      num: "08",
+      title: "BPS & BPO Solutions",
+      description:
+        "Business process outsourcing and shared services solutions, optimizing operational efficiency and cost-effectiveness.",
     },
     // {
     //   num: "07",
@@ -173,17 +179,31 @@ export const ctaStrip = {
 export const insightsSection = {
   eyebrow: "Social Proof & Insights",
   heading: "What our clients say, and what we're watching in the market.",
-  /** EDIT: sample quotes, not real clients. Replace once you have permission to publish them. */
+  /**
+   * !! SAMPLE COPY — INVENTED, NOT REAL CLIENTS. REPLACE BEFORE LAUNCH. !!
+   *
+   * These exist so the section can be designed and reviewed with realistic
+   * text in place. The companies are fictional and the quotes were written
+   * here, not said by anyone.
+   *
+   * Publishing invented testimonials as if they were real is banned outright
+   * by the Digital Markets, Competition and Consumers Act 2024 (fake consumer
+   * reviews), and the ASA treats it as misleading advertising. Swap in real,
+   * attributable quotes you have written permission to publish, or delete the
+   * testimonials array and the section renders without it.
+   */
   testimonials: [
     {
-      quote: "[Insert a real client testimonial quote here.]",
-      role: "[Client Job Title]",
-      company: "[Client Company or Industry]",
+      quote:
+        "We had two staff engineer roles open for five months. Zenlix filled both inside six weeks, and a year on, both hires are still with us.",
+      role: "VP of Engineering",
+      company: "Northwind Logistics",
     },
     {
-      quote: "[Insert a second client testimonial quote here.]",
-      role: "[Client Job Title]",
-      company: "[Client Company or Industry]",
+      quote:
+        "They pushed back on our job spec before sourcing a single candidate. That conversation is the reason the shortlist was three people instead of thirty.",
+      role: "Head of Talent Acquisition",
+      company: "Meridian Health Group",
     },
   ] satisfies Testimonial[],
   /** EDIT: replace `href` with the real article URL, or delete a card. */

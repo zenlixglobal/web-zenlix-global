@@ -21,7 +21,7 @@ export function Hero() {
       <Container className="relative z-10 grid items-center gap-10 pt-28 pb-16 sm:pt-36 sm:pb-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-15 lg:pt-45 lg:pb-30">
         {/* Panel sits first on small screens, mirroring `.hero-panel { order:-1 }`. */}
         <div className="order-2 lg:order-1">
-          <Eyebrow className="mb-3.5 font-bold">
+          <Eyebrow className="mb-3.5">
             {hero.eyebrow}
           </Eyebrow>
 

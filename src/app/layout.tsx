@@ -22,7 +22,10 @@ const fraunces = Fraunces({
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-plex-mono",
-  weight: ["400", "500"],
+  // 700 is loaded because the section eyebrows are bold. Without it the
+  // browser synthesises a faux bold by smearing the 500 weight, which looks
+  // muddy on a mono face at 20px.
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
