@@ -18,7 +18,13 @@ export function SiteHeader() {
       {/* The condensed heights stay under the originals, so the
           `scroll-padding-top` set for the tallest state still clears the bar. */}
       <Container className="flex h-[74px] items-center gap-4 transition-[height] duration-300 ease-out group-data-[condensed=true]/header:h-[62px] sm:h-[86px] sm:group-data-[condensed=true]/header:h-[70px] md:gap-9 lg:gap-12">
-        <Logo />
+        {/* The full 55px mark next to 34px type is ~305px of bar — more than a
+            320px phone can give up once the hamburger and the gutters are
+            paid for. Scaled down to fit there and back up once there is room. */}
+        <Logo
+          className="gap-2 text-[22px] sm:gap-2.5 sm:text-[28px] lg:text-[34px]"
+          markClassName="size-10 sm:size-12 lg:size-[55px]"
+        />
 
         {/* `ms-auto` pushes the nav and the CTA to the right edge as one group,
             so the links sit beside the button instead of floating in the middle
