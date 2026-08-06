@@ -38,6 +38,16 @@ export function LogoMark({
   );
 }
 
+/**
+ * Mark + wordmark, sized for the tightest place it appears (the 320px-wide
+ * phone header, where it shares the bar with the hamburger). Callers with more
+ * room — the site header past `sm` — scale it up through `className` /
+ * `markClassName`; those defaults are unprefixed so a plain `size-9` from the
+ * drawer still wins.
+ *
+ * `whitespace-nowrap` keeps "Zenlix Global" on one line: wrapping it would push
+ * the fixed-height bar out of shape rather than saving any width.
+ */
 export function Logo({
   className,
   markClassName,
@@ -52,16 +62,15 @@ export function Logo({
       href="/"
       onClick={onNavigate}
       className={cn(
-        "flex items-center gap-2.5 font-heading text-[34px] font-semibold text-white",
+        "flex items-center gap-2 font-heading text-[22px] font-semibold whitespace-nowrap text-white",
         "rounded-xs outline-offset-4 focus-visible:outline-2 focus-visible:outline-gold-500",
         className,
       )}
     >
-      <LogoMark
-        size={55}
-        priority
-        className={cn("size-[55px]", markClassName)}
-      />
+      {/* Intrinsic size stays at the largest rendered size (55px in the header)
+          so the srcset covers it; every other use is smaller and reuses the
+          same cached file. */}
+      <LogoMark size={55} priority className={cn("size-10", markClassName)} />
       <span>{site.name}</span>
     </Link>
   );

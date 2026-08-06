@@ -39,8 +39,8 @@ export const site = {
 
 /** EDIT: contact details — these also feed the footer and JSON-LD. */
 export const contactDetails = {
-  phone: "[+1 (000) 000-0000]",
-  email: "[contact@zenlixglobal.com]",
+  phone: "+1 (469) 692 3220",
+  email: "info@zenlixglobal.com",
   addressLine1: "[Your Street Address]",
   addressLine2: "[City, State ZIP]",
   /** Single-line form used in the footer. */
@@ -57,7 +57,7 @@ export const contactDetails = {
  */
 export const legalDetails = {
   /** The legal entity that controls the data — a policy has to name it. */
-  entity: "[Zenlix Global LLC]",
+  entity: "Zenlix Global LLC",
   /** Rendered as "Last updated" on /privacy. */
   effectiveDate: "August 3, 2026",
   /**
@@ -68,7 +68,7 @@ export const legalDetails = {
    */
   termsEffectiveDate: "August 3, 2026",
   /** Rights requests go here; can be the same inbox as contactDetails.email. */
-  privacyEmail: "[privacy@zenlixglobal.com]",
+  privacyEmail: "info@zenlixglobal.com",
   /** Toll-free line, or "" to drop the phone method from the rights section. */
   privacyPhone: "",
   /**
@@ -76,10 +76,10 @@ export const legalDetails = {
    * naming a state with no connection to the business is how a choice-of-law
    * clause gets struck out.
    */
-  governingState: "[Texas]",
+  governingState: "Texas",
   /** Exclusive venue, phrased to drop straight into the sentence. */
   governingVenue:
-    "[the state and federal courts located in Collin County, Texas]",
+    "the state and federal courts located in Collin County, Texas",
   /**
    * The vendor that routes our email, calls, and SMS on our behalf.
    *
@@ -88,11 +88,11 @@ export const legalDetails = {
    * A2P registration asks for the same disclosure. Replace with the partner's
    * full registered name.
    */
-  messagingPartner: "Foxbridge Solutions",
+  messagingPartner: "Foxbridge Solutions Pvt Ltd",
   retention: {
-    inquiries: "[24 months]",
-    candidates: "[36 months]",
-    analytics: "[14 months]",
+    inquiries: "24 months",
+    candidates: "36 months",
+    analytics: "14 months",
   },
 } as const;
 
