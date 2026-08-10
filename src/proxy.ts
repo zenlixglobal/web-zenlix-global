@@ -57,7 +57,13 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isLoginRoute && user) {
+  // `?denied=1` means requireAdmin() just turned this session away: they are
+  // signed in to Supabase but are not on the team. Bouncing them back to
+  // /admin would restart that exact redirect, so let the login page render and
+  // explain instead.
+  const wasDenied = request.nextUrl.searchParams.has("denied");
+
+  if (isLoginRoute && user && !wasDenied) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 

@@ -3,24 +3,43 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { can, type Capability } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
+/**
+ * Every admin section, with the capability that unlocks it.
+ *
+ * `Settings` has no capability: a viewer still has a profile and a password to
+ * change. What they can see *inside* it is decided in `SettingsNav`.
+ */
 const LINKS = [
-  { href: "/admin", label: "Enquiries" },
-  { href: "/admin/analytics", label: "Analytics" },
-  { href: "/admin/insights", label: "Insights" },
+  { href: "/admin", label: "Enquiries", capability: "submissions:read" },
+  { href: "/admin/analytics", label: "Analytics", capability: "analytics:read" },
+  { href: "/admin/insights", label: "Insights", capability: "insights:read" },
+  { href: "/admin/settings", label: "Settings", capability: null },
 ] as const;
 
 /**
  * Top-level admin sections. A client component only because the active tab
  * depends on the current path — everything it links to is server-rendered.
+ *
+ * Hiding a tab is a courtesy, not a control: the pages behind them call
+ * `requireCapability()` and the data behind those is gated by RLS.
  */
-export function AdminNav() {
+export function AdminNav({
+  capabilities,
+}: {
+  capabilities: Capability[];
+}) {
   const pathname = usePathname();
+
+  const visible = LINKS.filter(
+    (link) => link.capability === null || can({ capabilities }, link.capability),
+  );
 
   return (
     <nav aria-label="Admin sections" className="flex items-center gap-1">
-      {LINKS.map((link) => {
+      {visible.map((link) => {
         // "/admin" would otherwise match every child route.
         const active =
           link.href === "/admin"

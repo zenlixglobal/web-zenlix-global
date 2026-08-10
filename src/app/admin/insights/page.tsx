@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/auth";
+import { can } from "@/lib/permissions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { InsightArticle } from "@/lib/supabase/types";
 
@@ -31,6 +32,9 @@ export const dynamic = "force-dynamic";
  */
 export default async function InsightsAdminPage() {
   const user = await requireAdmin();
+  // Viewers read the list — including drafts — but are shown none of the
+  // controls that would be refused by `authorize()` on submit.
+  const canWrite = can(user, "insights:write");
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
@@ -56,12 +60,14 @@ export default async function InsightsAdminPage() {
           </p>
         </div>
 
-        <Button asChild variant="navy" size="lg" className="gap-2">
-          <Link href="/admin/insights/new">
-            <PlusIcon className="size-4" />
-            New article
-          </Link>
-        </Button>
+        {canWrite ? (
+          <Button asChild variant="navy" size="lg" className="gap-2">
+            <Link href="/admin/insights/new">
+              <PlusIcon className="size-4" />
+              New article
+            </Link>
+          </Button>
+        ) : null}
       </div>
 
       {error ? (
@@ -75,12 +81,14 @@ export default async function InsightsAdminPage() {
             static placeholder cards from{" "}
             <code className="font-mono text-xs">src/content/site.ts</code>.
           </p>
-          <Button asChild variant="navy" size="lg" className="mt-5 gap-2">
-            <Link href="/admin/insights/new">
-              <PlusIcon className="size-4" />
-              Write the first one
-            </Link>
-          </Button>
+          {canWrite ? (
+            <Button asChild variant="navy" size="lg" className="mt-5 gap-2">
+              <Link href="/admin/insights/new">
+                <PlusIcon className="size-4" />
+                Write the first one
+              </Link>
+            </Button>
+          ) : null}
         </div>
       ) : (
         <div className="overflow-x-auto border border-line bg-white">
@@ -98,12 +106,18 @@ export default async function InsightsAdminPage() {
               {articles.map((article) => (
                 <TableRow key={article.id}>
                   <TableCell className="max-w-96">
-                    <Link
-                      href={`/admin/insights/${article.id}`}
-                      className="font-medium text-navy-900 underline-offset-4 hover:underline"
-                    >
-                      {article.title}
-                    </Link>
+                    {/* The editor requires insights:write, so linking a viewer
+                        into it would bounce them to the dashboard. */}
+                    {canWrite ? (
+                      <Link
+                        href={`/admin/insights/${article.id}`}
+                        className="font-medium text-navy-900 underline-offset-4 hover:underline"
+                      >
+                        {article.title}
+                      </Link>
+                    ) : (
+                      <span className="font-medium">{article.title}</span>
+                    )}
                     <span className="block truncate font-mono text-xs text-slate-muted">
                       /insights/{article.slug}
                     </span>
@@ -150,18 +164,24 @@ export default async function InsightsAdminPage() {
                         </Button>
                       ) : null}
 
-                      <form action={toggleInsightPublished}>
-                        <input type="hidden" name="id" value={article.id} />
-                        <input type="hidden" name="slug" value={article.slug} />
-                        <input
-                          type="hidden"
-                          name="published"
-                          value={article.published ? "false" : "true"}
-                        />
-                        <Button type="submit" variant="outline" size="sm">
-                          {article.published ? "Unpublish" : "Publish"}
-                        </Button>
-                      </form>
+                      {canWrite ? (
+                        <form action={toggleInsightPublished}>
+                          <input type="hidden" name="id" value={article.id} />
+                          <input
+                            type="hidden"
+                            name="slug"
+                            value={article.slug}
+                          />
+                          <input
+                            type="hidden"
+                            name="published"
+                            value={article.published ? "false" : "true"}
+                          />
+                          <Button type="submit" variant="outline" size="sm">
+                            {article.published ? "Unpublish" : "Publish"}
+                          </Button>
+                        </form>
+                      ) : null}
                     </div>
                   </TableCell>
                 </TableRow>

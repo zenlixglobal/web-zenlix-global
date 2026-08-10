@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/auth";
+import { authorize } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { InsightArticleInput } from "@/lib/supabase/types";
 import {
@@ -16,10 +16,12 @@ import {
 /**
  * Insight article CRUD.
  *
- * Server Actions are public HTTP endpoints, so each re-checks the caller with
- * `requireAdmin()`. The writes also go through the session client, so the
- * "admins write insights" RLS policy is the backstop if that check is ever
- * removed.
+ * Server Actions are public HTTP endpoints, so each re-checks the caller and
+ * their role. The writes also go through the session client, so the "admins
+ * write insights" RLS policy is the backstop if that check is ever removed.
+ *
+ * Deleting is held to a higher rank than writing: an editor can unpublish an
+ * article, which is reversible, but only an admin can destroy one.
  */
 
 /** 23505 = unique_violation, which here can only be the slug. */
@@ -84,9 +86,11 @@ export async function saveInsight(
   prevState: InsightFormState,
   formData: FormData,
 ): Promise<InsightFormState> {
-  await requireAdmin();
-
   const attempt = (prevState.attempt ?? 0) + 1;
+
+  const auth = await authorize("insights:write");
+  if (!auth.ok) return { status: "error", message: auth.message, attempt };
+
   const values = readValues(formData);
   const id = String(formData.get("id") ?? "").trim();
 
@@ -161,7 +165,8 @@ export async function saveInsight(
 const deleteSchema = z.object({ id: z.uuid(), slug: z.string().max(120) });
 
 export async function deleteInsight(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const auth = await authorize("insights:delete");
+  if (!auth.ok) return;
 
   const parsed = deleteSchema.safeParse({
     id: formData.get("id"),
@@ -193,7 +198,8 @@ const publishSchema = z.object({
 
 /** Publish/unpublish from the list, without opening the editor. */
 export async function toggleInsightPublished(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const auth = await authorize("insights:write");
+  if (!auth.ok) return;
 
   const parsed = publishSchema.safeParse({
     id: formData.get("id"),

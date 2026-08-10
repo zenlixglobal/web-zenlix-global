@@ -3,14 +3,14 @@ import Link from "next/link";
 
 import { AdminShell } from "@/components/admin/admin-shell";
 import { InsightForm } from "@/components/admin/insight-form";
-import { requireAdmin } from "@/lib/auth";
+import { requireCapability } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "New article" };
 
 export const dynamic = "force-dynamic";
 
 export default async function NewInsightPage() {
-  const user = await requireAdmin();
+  const user = await requireCapability("insights:write");
 
   return (
     <AdminShell user={user}>

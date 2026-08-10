@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { inquiryLabel } from "@/content/site";
 import { requireAdmin } from "@/lib/auth";
+import { ROLE_LABELS } from "@/lib/permissions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   STATUS_LABELS,
@@ -37,10 +38,10 @@ function isStatus(value: string | undefined): value is SubmissionStatus {
 export default async function AdminDashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; denied?: string }>;
 }) {
   const user = await requireAdmin();
-  const { status } = await searchParams;
+  const { status, denied } = await searchParams;
   const activeStatus = isStatus(status) ? status : undefined;
 
   const supabase = await createSupabaseServerClient();
@@ -58,6 +59,16 @@ export default async function AdminDashboardPage({
 
   return (
     <AdminShell user={user}>
+      {/* Where `requireCapability()` sends someone who opened a URL their role
+          does not cover. Without it the redirect looks like a broken link. */}
+      {denied ? (
+        <p className="mb-5 border border-gold-500/40 bg-gold-500/10 px-4 py-3 text-sm">
+          That section is limited to a role above{" "}
+          {ROLE_LABELS[user.role].toLowerCase()}. Ask an owner if you need
+          access.
+        </p>
+      ) : null}
+
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl">Enquiries</h1>

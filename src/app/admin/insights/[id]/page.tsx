@@ -6,7 +6,8 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { deleteInsight } from "@/app/admin/insights/actions";
 import { InsightForm } from "@/components/admin/insight-form";
 import { Button } from "@/components/ui/button";
-import { requireAdmin } from "@/lib/auth";
+import { requireCapability } from "@/lib/auth";
+import { can } from "@/lib/permissions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { InsightArticle } from "@/lib/supabase/types";
 
@@ -19,7 +20,7 @@ export default async function EditInsightPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = await requireAdmin();
+  const user = await requireCapability("insights:write");
   const { id } = await params;
 
   const supabase = await createSupabaseServerClient();
@@ -55,25 +56,31 @@ export default async function EditInsightPage({
       <div className="max-w-4xl">
         <InsightForm article={article} />
 
-        <div className="mt-10 border border-destructive/25 bg-destructive/5 p-4">
-          <h2 className="text-sm font-semibold text-destructive">
-            Delete this article
-          </h2>
-          <p className="mt-1 mb-3 text-xs text-slate-muted">
-            Permanent, and cannot be undone. If the article is published, the
-            URL will start returning 404 — unpublish instead if you only want it
-            off the site for now.
-          </p>
-          {/* No JS confirm: the button is styled as destructive and sits behind
-              its own heading, which is the pattern used elsewhere in /admin. */}
-          <form action={deleteInsight}>
-            <input type="hidden" name="id" value={article.id} />
-            <input type="hidden" name="slug" value={article.slug} />
-            <Button type="submit" variant="destructive" size="lg">
-              Delete permanently
-            </Button>
-          </form>
-        </div>
+        {/* Editors write and unpublish; only admins destroy. The section is
+            hidden rather than disabled — there is nothing an editor can do
+            here, so offering the affordance would only be a dead end. */}
+        {can(user, "insights:delete") ? (
+          <div className="mt-10 border border-destructive/25 bg-destructive/5 p-4">
+            <h2 className="text-sm font-semibold text-destructive">
+              Delete this article
+            </h2>
+            <p className="mt-1 mb-3 text-xs text-slate-muted">
+              Permanent, and cannot be undone. If the article is published, the
+              URL will start returning 404 — unpublish instead if you only want
+              it off the site for now.
+            </p>
+            {/* No JS confirm: the button is styled as destructive and sits
+                behind its own heading, which is the pattern used elsewhere in
+                /admin. */}
+            <form action={deleteInsight}>
+              <input type="hidden" name="id" value={article.id} />
+              <input type="hidden" name="slug" value={article.slug} />
+              <Button type="submit" variant="destructive" size="lg">
+                Delete permanently
+              </Button>
+            </form>
+          </div>
+        ) : null}
       </div>
     </AdminShell>
   );
