@@ -13,6 +13,7 @@ import type {
   BreakdownDimension,
   TimeBucket,
 } from "@/lib/analytics/types";
+import type { AdminRole, Capability } from "@/lib/permissions";
 
 export const SUBMISSION_STATUSES = [
   "new",
@@ -84,6 +85,39 @@ export type AnalyticsEvent = {
   props: Record<string, unknown>;
 };
 
+/** Mirrors supabase/migrations/0004_admin_roles.sql. */
+export type AdminUserRow = {
+  user_id: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  role: AdminRole;
+  full_name: string | null;
+  /** Non-null means access is suspended without deleting the account. */
+  disabled_at: string | null;
+  invited_by: string | null;
+};
+
+/** A per-person feature override; absent means "follow the role". */
+export type AdminUserPermissionRow = {
+  user_id: string;
+  capability: Capability;
+  granted: boolean;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+export type AdminAuditLogRow = {
+  id: number;
+  created_at: string;
+  actor_id: string | null;
+  actor_email: string | null;
+  action: string;
+  target_id: string | null;
+  target_label: string | null;
+  meta: Record<string, unknown>;
+};
+
 /** Mirrors supabase/migrations/0003_insights.sql. */
 export type InsightArticle = {
   id: string;
@@ -134,9 +168,29 @@ export type Database = {
         Relationships: NoRelationships;
       };
       admin_users: {
-        Row: { user_id: string; email: string; created_at: string };
-        Insert: { user_id: string; email: string };
-        Update: Partial<{ user_id: string; email: string }>;
+        Row: AdminUserRow;
+        Insert: Pick<AdminUserRow, "user_id" | "email"> &
+          Partial<
+            Pick<AdminUserRow, "role" | "full_name" | "invited_by" | "disabled_at">
+          >;
+        Update: Partial<
+          Pick<AdminUserRow, "email" | "role" | "full_name" | "disabled_at">
+        >;
+        Relationships: NoRelationships;
+      };
+      admin_user_permissions: {
+        Row: AdminUserPermissionRow;
+        Insert: Pick<AdminUserPermissionRow, "user_id" | "capability" | "granted"> &
+          Partial<Pick<AdminUserPermissionRow, "updated_by">>;
+        Update: Partial<Pick<AdminUserPermissionRow, "granted" | "updated_by">>;
+        Relationships: NoRelationships;
+      };
+      admin_audit_log: {
+        Row: AdminAuditLogRow;
+        Insert: Omit<AdminAuditLogRow, "id" | "created_at"> &
+          Partial<Pick<AdminAuditLogRow, "meta">>;
+        // Append-only: there is no update or delete policy on the table.
+        Update: never;
         Relationships: NoRelationships;
       };
       // Analytics rows are only ever written by `analytics_track()`, so the
@@ -169,6 +223,10 @@ export type Database = {
     Views: Record<string, never>;
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
+      current_admin_role: { Args: Record<string, never>; Returns: AdminRole };
+      admin_has_rank: { Args: { p_min: AdminRole }; Returns: boolean };
+      can_manage_admin: { Args: { p_target: AdminRole }; Returns: boolean };
+      admin_can: { Args: { p_capability: Capability }; Returns: boolean };
       analytics_track: {
         Args: { p_payload: Record<string, unknown> };
         Returns: undefined;
@@ -203,6 +261,8 @@ export type Database = {
     };
     Enums: {
       submission_status: SubmissionStatus;
+      admin_role: AdminRole;
+      admin_capability: Capability;
     };
     CompositeTypes: Record<string, never>;
   };

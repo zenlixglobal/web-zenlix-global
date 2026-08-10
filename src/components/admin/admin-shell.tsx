@@ -6,7 +6,9 @@ import { AdminNav } from "@/components/admin/admin-nav";
 import { LivePill } from "@/components/admin/live-pill";
 import { LogoMark } from "@/components/site/logo";
 import { Button } from "@/components/ui/button";
+import { displayName } from "@/lib/admin-users";
 import type { AdminUser } from "@/lib/auth";
+import { ROLE_LABELS } from "@/lib/permissions";
 
 export function AdminShell({
   user,
@@ -34,14 +36,22 @@ export function AdminShell({
               <LogoMark size={28} className="size-7" />
               <span>Zenlix Admin</span>
             </Link>
-            <AdminNav />
+            <AdminNav capabilities={user.capabilities} />
           </div>
 
           <div className="flex items-center gap-3">
             <LivePill initialVisitors={liveVisitors} />
-            <span className="hidden text-sm text-navy-fg-subtle lg:inline">
-              {user.email}
-            </span>
+            {/* Name over email: on a shared screen the role is the useful
+                signal, and the address is one click away in Settings. */}
+            <Link
+              href="/admin/settings"
+              className="hidden text-right text-sm leading-tight text-navy-fg-subtle transition-colors hover:text-white lg:block"
+            >
+              {displayName({ full_name: user.fullName, email: user.email })}
+              <span className="block text-xs text-gold-300">
+                {ROLE_LABELS[user.role]}
+              </span>
+            </Link>
             <form action={signOut}>
               <Button
                 type="submit"

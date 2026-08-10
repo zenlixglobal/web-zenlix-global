@@ -4,9 +4,11 @@ import { ArrowLeftIcon } from "lucide-react";
 
 import { AdminShell } from "@/components/admin/admin-shell";
 import { NotesForm } from "@/components/admin/notes-form";
+import { StatusBadge } from "@/components/admin/status-badge";
 import { StatusForm } from "@/components/admin/status-form";
 import { inquiryLabel } from "@/content/site";
 import { requireAdmin } from "@/lib/auth";
+import { can } from "@/lib/permissions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ContactSubmission } from "@/lib/supabase/types";
 
@@ -18,6 +20,9 @@ export default async function SubmissionDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const user = await requireAdmin();
+  // Viewers read the enquiry in full; the status dropdown and notes box are
+  // the only things their role withholds.
+  const canWrite = can(user, "submissions:write");
   const { id } = await params;
 
   const supabase = await createSupabaseServerClient();
@@ -49,7 +54,11 @@ export default async function SubmissionDetailPage({
             {formatDate(submission.created_at)}
           </p>
         </div>
-        <StatusForm id={submission.id} status={submission.status} />
+        {canWrite ? (
+          <StatusForm id={submission.id} status={submission.status} />
+        ) : (
+          <StatusBadge status={submission.status} />
+        )}
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_20rem]">
@@ -65,7 +74,13 @@ export default async function SubmissionDetailPage({
             Internal notes
           </h2>
           <div className="mt-3">
-            <NotesForm id={submission.id} notes={submission.admin_notes} />
+            {canWrite ? (
+              <NotesForm id={submission.id} notes={submission.admin_notes} />
+            ) : (
+              <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-slate-muted">
+                {submission.admin_notes || "No notes yet."}
+              </p>
+            )}
           </div>
         </div>
 

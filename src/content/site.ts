@@ -41,10 +41,10 @@ export const site = {
 export const contactDetails = {
   phone: "+1 (469) 692 3220",
   email: "info@zenlixglobal.com",
-  addressLine1: "[Your Street Address]",
-  addressLine2: "[City, State ZIP]",
+  addressLine1: "5900 Balcones Drive, STE 100",
+  addressLine2: "Austin, TX 78731",
   /** Single-line form used in the footer. */
-  addressShort: "[Your Street Address, City, ST]",
+  addressShort: "5900 Balcones Drive, STE 100, Austin, TX 78731",
 } as const;
 
 /**
@@ -424,7 +424,6 @@ export const contactPage = {
   formHeading: "Start the conversation.",
   formIntro:
     "Discreet, professional, and entirely focused on your outcome, whether you're hiring or looking to make your next move.",
-  note: "Placeholder contact details. Replace the bracketed text in src/content/site.ts with your real phone number, email, and office address before publishing.",
 } as const;
 
 /**

@@ -60,10 +60,6 @@ export default function ContactPage() {
               <br />
               {contactDetails.addressLine2}
             </ContactDetail>
-
-            <p className="mt-9 border-l-2 border-gold-500 bg-white/5 px-4 py-4 text-[13px] text-[#a9b3c4]">
-              {contactPage.note}
-            </p>
           </StaggerItem>
 
           <StaggerItem direction="left">

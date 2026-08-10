@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/auth";
+import { authorize } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { SUBMISSION_STATUSES } from "@/lib/supabase/types";
 import type { FormState } from "@/lib/validation/contact";
@@ -15,15 +15,17 @@ const updateStatusSchema = z.object({
 });
 
 /**
- * Server Actions are public HTTP endpoints, so each one re-checks the caller.
- * The write itself also goes through the session client, so RLS is the
- * backstop if this check is ever removed.
+ * Server Actions are public HTTP endpoints, so each one re-checks the caller —
+ * including their role, since a viewer can reach this URL as easily as an
+ * editor can. The write itself also goes through the session client, so RLS is
+ * the backstop if this check is ever removed.
  */
 export async function updateSubmissionStatus(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requireAdmin();
+  const auth = await authorize("submissions:write");
+  if (!auth.ok) return { status: "error", message: auth.message };
 
   const parsed = updateStatusSchema.safeParse({
     id: formData.get("id"),
@@ -60,7 +62,8 @@ export async function updateSubmissionNotes(
   _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requireAdmin();
+  const auth = await authorize("submissions:write");
+  if (!auth.ok) return { status: "error", message: auth.message };
 
   const parsed = notesSchema.safeParse({
     id: formData.get("id"),
