@@ -32,6 +32,7 @@ export async function sendEnquirerAcknowledgement(
   }
 
   const replyTo = env.contactToEmails();
+  const cc = env.contactCcEmails();
   const inquiry = inquiryLabel(input.inquiryType);
 
   try {
@@ -41,6 +42,9 @@ export async function sendEnquirerAcknowledgement(
       // A reply to a "we got your message" email is a real reply. Send it to
       // the team, not to the no-reply sender.
       ...(replyTo.length > 0 ? { replyTo: replyTo.join(", ") } : {}),
+      // Copies the team on what the visitor was told. Visible to them, so it
+      // stays a Cc only while the address is one the site already publishes.
+      ...(cc.length > 0 ? { cc } : {}),
       subject: `We've received your enquiry | ${site.name}`,
       text: plainText(input, inquiry),
       html: html(input, inquiry),
