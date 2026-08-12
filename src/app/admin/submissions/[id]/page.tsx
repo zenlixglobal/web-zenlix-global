@@ -109,7 +109,7 @@ export default async function SubmissionDetailPage({
             <Detail label="Notification email">
               {submission.email_sent_at
                 ? `Sent ${formatDate(submission.email_sent_at)}`
-                : "Not sent. Check RESEND_API_KEY / CONTACT_TO_EMAIL"}
+                : "Not sent. Check SMTP_USER / SMTP_PASSWORD / CONTACT_TO_EMAIL"}
             </Detail>
             {submission.source_page ? (
               <Detail label="Submitted from">{submission.source_page}</Detail>

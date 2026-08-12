@@ -206,7 +206,8 @@ export default function PrivacyPage() {
                 <strong>Service providers</strong> who process data on our behalf
                 under contract and may not use it for their own purposes: our
                 database and authentication provider (Supabase), our
-                transactional email provider (Resend), our website hosting and
+                transactional email provider (Google Workspace / Gmail), our
+                website hosting and
                 content-delivery provider ([Vercel]), and{" "}
                 {legalDetails.messagingPartner}, which handles calls and text
                 messages on our behalf.

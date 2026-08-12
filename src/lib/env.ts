@@ -35,10 +35,22 @@ export const env = {
       process.env.SUPABASE_SERVICE_ROLE_KEY,
     ),
 
-  resendApiKey: () => process.env.RESEND_API_KEY,
-  /** Verified Resend sender, e.g. "Zenlix Global <notifications@zenlixglobal.com>". */
+  /** SMTP host. Defaults to Gmail. */
+  smtpHost: () => process.env.SMTP_HOST ?? "smtp.gmail.com",
+  /** SMTP port. 465 is implicit TLS, 587 is STARTTLS. */
+  smtpPort: () => Number(process.env.SMTP_PORT ?? 465),
+  /** Full Gmail address the app authenticates as. */
+  smtpUser: () => process.env.SMTP_USER,
+  /** Gmail App Password (not the account password). */
+  smtpPassword: () => process.env.SMTP_PASSWORD,
+  /**
+   * Sender header, e.g. "Zenlix Global <notifications@zenlixglobal.com>".
+   *
+   * Gmail rewrites this to the authenticated account unless the address is a
+   * verified "Send mail as" alias, so it falls back to SMTP_USER.
+   */
   contactFromEmail: () =>
-    process.env.CONTACT_FROM_EMAIL ?? "Zenlix Global <onboarding@resend.dev>",
+    process.env.CONTACT_FROM_EMAIL ?? process.env.SMTP_USER ?? "",
   /** Comma-separated inbox(es) that receive new enquiries. */
   contactToEmails: () =>
     (process.env.CONTACT_TO_EMAIL ?? "")
@@ -59,5 +71,9 @@ export function isSupabaseConfigured(): boolean {
 
 /** True when outbound email is configured. */
 export function isEmailConfigured(): boolean {
-  return Boolean(process.env.RESEND_API_KEY && env.contactToEmails().length);
+  return Boolean(
+    process.env.SMTP_USER &&
+      process.env.SMTP_PASSWORD &&
+      env.contactToEmails().length,
+  );
 }
