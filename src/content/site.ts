@@ -236,8 +236,7 @@ export const advantage = {
   points: [
     "Passive-candidate sourcing beyond job boards and applicant pools",
     "Technical vetting by recruiters who understand the role, not just the title",
-    "Cultural and behavioral alignment checked before a resume ever reaches you",
-    "Dedicated account team from intake through 90-day placement check-in",
+    "Dedicated account team from intake to offer.",
   ],
 } as const;
 
@@ -328,7 +327,7 @@ export const aboutPage = {
   eyebrow: "Our Firm",
   heading: "A staffing partner that works like part of your team.",
   intro:
-    "Zenlix Global places vetted IT and non-IT talent through direct hire, contract, executive search, and RPO, with one team on your search from the first conversation to the start date.",
+    "Zenlix Global places vetted IT and non-IT talent through direct hire, contract, executive search, and RPO. One recruiter stays on your search from the first conversation to the start date, and you only ever see candidates who have already been screened against your brief.",
 
   /**
    * The "who we are" narrative. `paragraphs` is an array so the prose can be
@@ -336,16 +335,16 @@ export const aboutPage = {
    */
   story: {
     eyebrow: "Who We Are",
-    heading: "Recruiters who understand the role before they fill it.",
-    lede: "Roles rarely stay open because there are no good people. They stay open because nobody slowed down long enough to define what the role actually needed.",
+    heading: "A hiring partner you never have to chase.",
+    lede: "You should know where your search stands without having to ask anyone for an update.",
     paragraphs: [
-      "Zenlix Global is a staffing and executive search firm working across technology, business, healthcare, and leadership hiring. Whatever the practice, every engagement runs the same way: the recruiter who takes your brief is the one who builds your shortlist and stands behind every name on it.",
-      "That structure is a choice, not a limitation. Nothing is lost in a handover to a delivery team you have never met, and no candidate reaches you without someone who can explain, in specifics, why they are on the list.",
-      "In practice it means we behave like an extension of your hiring team. We sit in on the intake, tell you early when a specification and a salary band do not line up, and keep you current while the search is running rather than only when it is finished.",
-      "One senior hire, a contract team that scales with your roadmap, or a recruitment function embedded under your own brand: the engagement model changes, the standard does not. We do not forward a resume we would not put our own name on.",
+      "Zenlix Global is a staffing and executive search firm covering technology, business, healthcare, and leadership hiring across the United States, on direct hire, contract, executive search, and embedded engagements.",
+      "Every search has one recruiter attached to it from the first call to the start date. They take the brief, do the screening, and present the shortlist, so you are never handed to a delivery team that was not in the room, and you never explain the role twice.",
+      "You only ever see candidates who have already been screened against that brief and have agreed to the responsibilities and the work location. Nothing moves forward until you say it should. We schedule the interviews on your approval and keep both sides briefed, and the offer itself is yours to make.",
+      "One senior hire, a contract team that scales with your roadmap, or a recruitment function running under your own brand: the shape of the engagement changes, the way it is run does not.",
     ],
     pullQuote:
-      "We would rather lose the fee than send you someone we will be apologizing for six months from now.",
+      "Every resume we send comes with the reason it is on the list.",
     image: {
       src: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800",
       alt: "Two colleagues talking across a table in a bright meeting room",
@@ -359,67 +358,40 @@ export const aboutPage = {
     ],
   },
 
-  /** EDIT: the search process. Add or drop steps freely — the rail redraws. */
-  approach: {
-    eyebrow: "How a Search Runs",
-    heading: "The same steps on every engagement.",
+  /**
+   * EDIT: the engagement, stage by stage. Add or drop steps freely — the rail
+   * redraws itself around whatever is in this array.
+   */
+  process: {
+    eyebrow: "How It Works",
+    heading: "From the first conversation to a hire that stays.",
     intro:
-      "No black box between the brief and the shortlist. This is what happens after you get in touch, and what you can hold us to at each stage.",
+      "The same five stages on every engagement, and you approve each one before it moves. No black box between the brief and the shortlist.",
     items: [
       {
         step: "01",
-        title: "Intake",
-        body: "We start with a conversation rather than a job description: what the team is missing, what the first six months look like, and what would make this hire obviously successful.",
+        title: "First contact",
+        body: "It starts with an email: a short note from us, and a reply telling us what you are hiring for, the seniority and salary band you have in mind, and when you need somebody in the seat.",
       },
       {
         step: "02",
-        title: "Calibration",
-        body: "You get the brief back in writing with the market reality attached: where the salary band sits, how deep the candidate pool actually is, and anything in the spec that will slow the search down.",
+        title: "Resumes for review",
+        body: "We work our own candidate pool against the brief and screen every candidate ourselves, taking them through the job responsibilities and the work location before anyone is put forward. What reaches you is a shortlist of resumes rather than a stack to sort through, and everyone on it has already been made aware of the role and the location.",
       },
       {
         step: "03",
-        title: "Search",
-        body: "We source directly into our network for the people who are not applying anywhere, and screen every one of them against the brief before you hear a name.",
+        title: "Your approval",
+        body: "You tell us who to take forward. Nobody is contacted about scheduling, and no candidate is told they are in process, until you have said yes to them.",
       },
       {
         step: "04",
-        title: "Shortlist",
-        body: "Three or four candidates, each with a written case for being on the list and an honest note on where they run lighter than the spec.",
+        title: "Interviews",
+        body: "We coordinate the calendars, brief the candidate on the format and who they are meeting, and carry the back-and-forth between both sides so your team only has to turn up and assess.",
       },
       {
         step: "05",
-        title: "Offer",
-        body: "We stay in it through references, offer, and notice period. That stretch is where good hires are most often lost, and it should end with a start date, not a maybe.",
-      },
-    ],
-  },
-
-  /** EDIT: the working principles shown as the hairline grid on /about. */
-  principles: {
-    eyebrow: "How We Work",
-    heading: "Four promises we would rather be held to than advertise.",
-    intro:
-      "Every staffing firm says it is different. These are the specific, checkable things we do differently. Hold us to them.",
-    items: [
-      {
-        num: "01",
-        title: "You will hear what we actually think",
-        body: "If the band is below market, the interview loop is too long, or the role as written describes two different people, you will hear it in the first conversation, not after eight weeks of silence and an apologetic status call.",
-      },
-      {
-        num: "02",
-        title: "Whoever takes the brief reads the resumes",
-        body: "No handover to a delivery team you have never met. The recruiter in your intake call is the one building the shortlist, and the one who has to defend every name on it.",
-      },
-      {
-        num: "03",
-        title: "Three candidates, not thirty",
-        body: "A shortlist is a recommendation. If we send a stack for you to sort through, we have quietly moved our half of the work onto your calendar.",
-      },
-      {
-        num: "04",
-        title: "We are still here at ninety days",
-        body: "We check in with both sides a quarter after the start date, and when a placement is not working, we say so first and fix it rather than wait to be called.",
+        title: "The hire",
+        body: "You make the offer and agree the start date with your new hire.",
       },
     ],
   },

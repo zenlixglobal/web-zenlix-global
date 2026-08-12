@@ -3,31 +3,31 @@ import { Container } from "@/components/site/container";
 import { SectionHeading } from "@/components/site/section-heading";
 import { aboutPage } from "@/content/site";
 
-const { approach } = aboutPage;
+const { process } = aboutPage;
 
 /**
- * The stages of a search, drawn as a single hairline rail with a gold marker
- * per step.
+ * The stages of an engagement, drawn as a single hairline rail with a gold
+ * marker per step.
  *
  * White rather than cream so the section separates from the narrative above it
- * without adding a third navy band to the page.
+ * without adding a second navy band before the advantage strip.
  */
-export function Approach() {
+export function Process() {
   return (
     <section className="bg-white py-16 sm:py-20 lg:py-28">
       <Container>
         <Reveal>
           <SectionHeading
-            eyebrow={approach.eyebrow}
-            heading={approach.heading}
-            intro={approach.intro}
+            eyebrow={process.eyebrow}
+            heading={process.heading}
+            intro={process.intro}
             className="mb-10 sm:mb-14"
           />
         </Reveal>
 
         <Stagger as="div" stagger={0.09}>
           <ol className="border-l border-line">
-            {approach.items.map((item) => (
+            {process.items.map((item) => (
               <StaggerItem
                 key={item.step}
                 as="li"

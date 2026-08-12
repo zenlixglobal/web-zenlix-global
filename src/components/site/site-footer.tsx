@@ -1,3 +1,4 @@
+import { MailIcon, MapPinIcon, PhoneIcon, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
@@ -46,9 +47,13 @@ export function SiteFooter() {
           <StaggerItem distance={14}>
             <FooterHeading>Connect</FooterHeading>
             <ul className="text-sm">
-              <li className="mb-3">{contactDetails.addressShort}</li>
-              <li className="mb-3">{contactDetails.phone}</li>
-              <li className="mb-3 break-all">{contactDetails.email}</li>
+              <ContactLine icon={MapPinIcon}>
+                {contactDetails.addressShort}
+              </ContactLine>
+              <ContactLine icon={PhoneIcon}>{contactDetails.phone}</ContactLine>
+              <ContactLine icon={MailIcon} className="break-all">
+                {contactDetails.email}
+              </ContactLine>
             </ul>
 
             {/* Renders only once a profile URL is filled in, so an unset row
@@ -104,6 +109,30 @@ export function SiteFooter() {
         </Reveal>
       </Container>
     </footer>
+  );
+}
+
+/**
+ * One line of contact detail, icon in a fixed gutter.
+ *
+ * `items-start` rather than `items-center` because the address wraps to two
+ * lines on narrow columns: centring would float the pin between them.
+ */
+function ContactLine({
+  icon: Icon,
+  className,
+  children,
+}: {
+  icon: LucideIcon;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="mb-3 flex items-start gap-2.5">
+      {/* Nudged down to the first line's optical centre, not its box top. */}
+      <Icon aria-hidden className="mt-0.5 size-4 shrink-0 text-gold-300/70" />
+      <span className={className}>{children}</span>
+    </li>
   );
 }
 
