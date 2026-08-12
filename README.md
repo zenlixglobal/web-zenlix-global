@@ -66,22 +66,33 @@ Signing in is not enough; the user must also be on the allow-list.
 Anyone authenticated but *not* in `admin_users` is bounced back to the login
 page, and RLS returns them no rows even if they hit the API directly.
 
-## 2. Email setup (Resend)
+## 2. Email setup (Gmail SMTP)
 
-1. Create an API key at [resend.com/api-keys](https://resend.com/api-keys) and
-   verify your sending domain.
+1. On the sending Google account, turn on 2-Step Verification, then create an
+   App Password at
+   [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
+   The 16-character password it gives you is what SMTP authenticates with — the
+   normal account password will be rejected.
 2. Add to `.env.local`:
 
    ```
-   RESEND_API_KEY=re_...
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=465
+   SMTP_USER=notifications@zenlixglobal.com
+   SMTP_PASSWORD=abcd efgh ijkl mnop
    CONTACT_FROM_EMAIL="Zenlix Global <notifications@zenlixglobal.com>"
    CONTACT_TO_EMAIL=careers@zenlixglobal.com   # comma-separate for several
    ```
 
-Leave `RESEND_API_KEY` empty in development: submissions still save to Supabase
-and the skipped email is logged to the console. Email is best-effort by design —
-if Resend is down the enquiry is still stored, and the admin list flags any row
-that was never emailed.
+`CONTACT_FROM_EMAIL` must be `SMTP_USER` or an alias verified under Gmail →
+Settings → Accounts → "Send mail as"; otherwise Gmail rewrites the From header
+to the authenticated account. Note Gmail's relay caps sending at a few hundred
+messages a day, which is ample for enquiries but not for bulk mail.
+
+Leave `SMTP_USER` / `SMTP_PASSWORD` empty in development: submissions still save
+to Supabase and the skipped email is logged to the console. Email is best-effort
+by design — if the mail server is down the enquiry is still stored, and the admin
+list flags any row that was never emailed.
 
 ---
 
@@ -153,7 +164,7 @@ src/
   lib/
     auth.ts              requireAdmin() — the authorization boundary
     supabase/            browser / session / service-role clients
-    email/               Resend notification
+    email/               Gmail SMTP notifications
     rate-limit.ts validation/
   proxy.ts               Next 16's replacement for middleware.ts
 supabase/migrations/     database schema + RLS

@@ -1,8 +1,7 @@
 import "server-only";
 
-import { Resend } from "resend";
-
 import { inquiryLabel, site } from "@/content/site";
+import { getTransport } from "@/lib/email/transport";
 import { env, isEmailConfigured } from "@/lib/env";
 import type { ContactInput } from "@/lib/validation/contact";
 
@@ -23,18 +22,17 @@ export async function sendContactEmail(
 ): Promise<EmailResult> {
   if (!isEmailConfigured()) {
     console.warn(
-      "[contact] RESEND_API_KEY or CONTACT_TO_EMAIL not set — skipping email.",
+      "[contact] SMTP credentials or CONTACT_TO_EMAIL not set — skipping email.",
       { submissionId: meta.submissionId, email: input.email },
     );
     return { sent: false, reason: "not-configured" };
   }
 
-  const resend = new Resend(env.resendApiKey());
   const fullName = `${input.firstName} ${input.lastName}`;
   const inquiry = inquiryLabel(input.inquiryType);
 
   try {
-    const { error } = await resend.emails.send({
+    await getTransport().sendMail({
       from: env.contactFromEmail(),
       to: env.contactToEmails(),
       replyTo: input.email,
@@ -42,11 +40,6 @@ export async function sendContactEmail(
       text: plainText({ fullName, inquiry, input, meta }),
       html: html({ fullName, inquiry, input, meta }),
     });
-
-    if (error) {
-      console.error("[contact] Resend rejected the message", error);
-      return { sent: false, reason: "failed", detail: error.message };
-    }
 
     return { sent: true };
   } catch (error) {

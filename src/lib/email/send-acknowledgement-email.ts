@@ -1,8 +1,7 @@
 import "server-only";
 
-import { Resend } from "resend";
-
 import { inquiryLabel, site } from "@/content/site";
+import { getTransport } from "@/lib/email/transport";
 import { env, isEmailConfigured } from "@/lib/env";
 import type { ContactInput } from "@/lib/validation/contact";
 
@@ -32,26 +31,20 @@ export async function sendEnquirerAcknowledgement(
     return { sent: false, reason: "not-configured" };
   }
 
-  const resend = new Resend(env.resendApiKey());
   const replyTo = env.contactToEmails();
   const inquiry = inquiryLabel(input.inquiryType);
 
   try {
-    const { error } = await resend.emails.send({
+    await getTransport().sendMail({
       from: env.contactFromEmail(),
       to: [input.email],
       // A reply to a "we got your message" email is a real reply. Send it to
       // the team, not to the no-reply sender.
-      ...(replyTo.length > 0 ? { replyTo } : {}),
+      ...(replyTo.length > 0 ? { replyTo: replyTo.join(", ") } : {}),
       subject: `We've received your enquiry | ${site.name}`,
       text: plainText(input, inquiry),
       html: html(input, inquiry),
     });
-
-    if (error) {
-      console.error("[contact] Resend rejected the acknowledgement", error);
-      return { sent: false, reason: "failed", detail: error.message };
-    }
 
     return { sent: true };
   } catch (error) {
