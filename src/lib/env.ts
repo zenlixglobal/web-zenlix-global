@@ -57,6 +57,17 @@ export const env = {
       .split(",")
       .map((address) => address.trim())
       .filter(Boolean),
+  /**
+   * Comma-separated inbox(es) copied on the visitor's acknowledgement.
+   *
+   * Visible to the visitor — it is a Cc, not a Bcc — so only put addresses here
+   * that are already published on the site.
+   */
+  contactCcEmails: () =>
+    (process.env.CONTACT_CC_EMAIL ?? "")
+      .split(",")
+      .map((address) => address.trim())
+      .filter(Boolean),
 
   siteUrl: () => process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 } as const;
