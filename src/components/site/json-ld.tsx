@@ -1,4 +1,4 @@
-import { contactDetails, site } from "@/content/site";
+import { activeSocialLinks, contactDetails, site } from "@/content/site";
 
 /**
  * Structured data for the firm. Rendered with `<script type="application/ld+json">`
@@ -13,6 +13,11 @@ export function OrganizationJsonLd() {
     url: site.url,
     description: site.description,
     logo: `${site.url}/zenlix-mark.png`,
+    /* Omitted entirely while no profile URL is set: an empty sameAs array is a
+       claim of "no profiles anywhere", not an absence of one. */
+    ...(activeSocialLinks.length > 0
+      ? { sameAs: activeSocialLinks.map((link) => link.href) }
+      : {}),
     contactPoint: [
       {
         "@type": "ContactPoint",

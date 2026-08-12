@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Container } from "@/components/site/container";
 import { LogoMark } from "@/components/site/logo";
-import { contactDetails, footer, site } from "@/content/site";
+import { SocialIcon } from "@/components/site/social-icons";
+import { activeSocialLinks, contactDetails, footer, site } from "@/content/site";
 
 export function SiteFooter() {
   return (
@@ -49,6 +50,26 @@ export function SiteFooter() {
               <li className="mb-3">{contactDetails.phone}</li>
               <li className="mb-3 break-all">{contactDetails.email}</li>
             </ul>
+
+            {/* Renders only once a profile URL is filled in, so an unset row
+                collapses instead of leaving a gap under the address. */}
+            {activeSocialLinks.length > 0 ? (
+              <ul className="mt-5 flex items-center gap-3">
+                {activeSocialLinks.map((link) => (
+                  <li key={link.platform}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={link.label}
+                      className="flex size-9 items-center justify-center border border-white/12 transition-colors hover:border-gold-300/40 hover:text-gold-300"
+                    >
+                      <SocialIcon platform={link.platform} className="size-4" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </StaggerItem>
 
           {/* Legal sits last: it is the column people look for least, and the
