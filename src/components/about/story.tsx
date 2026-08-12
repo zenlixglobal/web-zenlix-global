@@ -8,7 +8,7 @@ import { aboutPage } from "@/content/site";
 const { story } = aboutPage;
 
 /**
- * The founder's note on /about.
+ * The "who we are" narrative on /about.
  *
  * Two columns on desktop: a framed photograph that stays put while the prose
  * scrolls past it, and the narrative itself. The photo column is the grid item
@@ -24,7 +24,7 @@ export function Story() {
           className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16"
         >
           <StaggerItem direction="right">
-            <figure className="border border-line bg-white p-3 lg:sticky lg:top-28">
+            <div className="border border-line bg-white p-3 lg:sticky lg:top-28">
               {/* Portrait only once it is a column of its own — stacked, a 4:5
                   crop at full width eats a whole phone screen before a word of
                   the story is visible. */}
@@ -37,18 +37,7 @@ export function Story() {
                   className="object-cover"
                 />
               </div>
-              <figcaption className="px-3 pt-5 pb-3">
-                <p className="font-mono text-[11.5px] tracking-[0.08em] text-gold-500 uppercase">
-                  {story.signature.caption}
-                </p>
-                <p className="mt-2.5 font-heading text-lg font-semibold text-navy-900">
-                  {story.signature.name}
-                </p>
-                <p className="text-sm text-slate-muted">
-                  {story.signature.role}
-                </p>
-              </figcaption>
-            </figure>
+            </div>
           </StaggerItem>
 
           <div>
@@ -69,10 +58,7 @@ export function Story() {
             </StaggerItem>
 
             {/* One <p> per paragraph rather than one prose block, so each
-                paragraph arrives on its own beat as the reader gets to it.
-                (No drop cap: the opening word is whatever the founders end up
-                writing, and a floated initial breaks apart on a narrow letter
-                — "In [2019]" sets as "I n".) */}
+                paragraph arrives on its own beat as the reader gets to it. */}
             <div className="mt-7 max-w-[68ch] space-y-5 text-[15.5px] leading-[1.8] text-slate-muted sm:text-[16.5px]">
               {story.paragraphs.map((paragraph, index) => (
                 <StaggerItem key={index} as="p" distance={12}>

@@ -8,6 +8,15 @@
  */
 
 export type NavItem = { label: string; href: string };
+/** Brand marks drawn in `src/components/site/social-icons.tsx`. */
+export type SocialPlatform = "linkedin" | "x" | "instagram" | "facebook";
+export type SocialLink = {
+  platform: SocialPlatform;
+  /** Accessible name for the icon link, e.g. "Zenlix Global on LinkedIn". */
+  label: string;
+  /** Full profile URL. Left empty, the icon is not rendered at all. */
+  href: string;
+};
 export type Service = { num: string; title: string; description: string };
 export type Stat = { value: string; label: string };
 export type Testimonial = { quote: string; role: string; company: string };
@@ -45,6 +54,15 @@ export const contactDetails = {
   addressLine2: "Austin, TX 78731",
   /** Single-line form used in the footer. */
   addressShort: "5900 Balcones Drive, STE 100, Austin, TX 78731",
+  /**
+   * Where the address links to in the footer and on /contact.
+   *
+   * Google's documented Maps URL form rather than a share link or an embedded
+   * place ID: it is stable, needs no API key, and resolves in whichever map
+   * app the visitor has set as default on mobile.
+   */
+  mapUrl:
+    "https://www.google.com/maps/search/?api=1&query=5900+Balcones+Drive+STE+100+Austin+TX+78731",
 } as const;
 
 /**
@@ -299,86 +317,79 @@ export const insightsSection = {
   ] as Insight[],
 } as const;
 
-/** EDIT: /about page copy. */
+/**
+ * EDIT: /about page copy.
+ *
+ * Deliberately undated: no founding year, no timeline, no founder byline. Every
+ * claim here is about how the firm works rather than when it started, so the
+ * page does not go stale and nothing unverifiable ships with it.
+ */
 export const aboutPage = {
   eyebrow: "Our Firm",
-  heading: "Built by recruiters who wanted to do it differently.",
+  heading: "A staffing partner that works like part of your team.",
   intro:
-    "Zenlix Global exists because too many staffing firms optimize for speed over fit. We optimize for fit first, and speed follows.",
+    "Zenlix Global places vetted IT and non-IT talent through direct hire, contract, executive search, and RPO, with one team on your search from the first conversation to the start date.",
 
   /**
-   * !! DRAFT NARRATIVE — HAS TO BE CONFIRMED BY THE FOUNDERS BEFORE LAUNCH. !!
-   *
-   * The shape of this story (a first search that went badly, the lesson taken
-   * from it, the firm built around that lesson) is written to be read out loud
-   * and corrected, not published as-is. Everything a reader could check —
-   * the year, the founder's name, the city, the practice list — is wrapped in
-   * [square brackets] so nothing unverified ships by accident.
-   *
-   * `paragraphs` is an array so the prose can be re-cut without touching the
-   * component; the first entry gets the drop cap.
+   * The "who we are" narrative. `paragraphs` is an array so the prose can be
+   * re-cut without touching the component.
    */
   story: {
-    eyebrow: "Our Story",
-    heading: "It started with a role that had been open for nine months.",
-    lede: "Not with a business plan. With a hiring manager who was out of patience, and a shortlist that had clearly been assembled by someone who had never spoken to the team.",
+    eyebrow: "Who We Are",
+    heading: "Recruiters who understand the role before they fill it.",
+    lede: "Roles rarely stay open because there are no good people. They stay open because nobody slowed down long enough to define what the role actually needed.",
     paragraphs: [
-      "In [2019], our founder took on a search three firms had already walked away from: one senior engineer, for a team that had lost two people in a quarter. The brief ran four pages. The thing that actually mattered — someone who could hold a team steady while the roadmap moved underneath it — was not written down anywhere in them. It took two weeks of listening to hear it, and eight days after that to find the person.",
-      "That hire is still in the seat. And the lesson stuck: roles rarely stay open because there are no good people. They stay open because nobody slowed down long enough to ask what the role really needed.",
-      "So we built the firm we wished we had been calling. Small enough that whoever takes your brief is whoever reads the resumes. Direct enough to tell you when the salary band and the seniority do not add up. Patient enough to send three candidates instead of thirty, and stubborn enough to keep looking until the right one turns up.",
-      "We are bigger now — [a team of 20+] across [IT, non-IT, healthcare, and executive search] — and the rule has not moved. We do not forward a resume we would not put our own name on. We call at ninety days, because a placement that does not last was never a placement. And we still turn down searches we do not believe we can do well, which costs us fees and buys us the only thing that compounds in this business: people who pick up when we call.",
+      "Zenlix Global is a staffing and executive search firm working across technology, business, healthcare, and leadership hiring. Whatever the practice, every engagement runs the same way: the recruiter who takes your brief is the one who builds your shortlist and stands behind every name on it.",
+      "That structure is a choice, not a limitation. Nothing is lost in a handover to a delivery team you have never met, and no candidate reaches you without someone who can explain, in specifics, why they are on the list.",
+      "In practice it means we behave like an extension of your hiring team. We sit in on the intake, tell you early when a specification and a salary band do not line up, and keep you current while the search is running rather than only when it is finished.",
+      "One senior hire, a contract team that scales with your roadmap, or a recruitment function embedded under your own brand: the engagement model changes, the standard does not. We do not forward a resume we would not put our own name on.",
     ],
     pullQuote:
-      "We would rather lose the fee than send you someone we will be apologizing for in six months.",
-    signature: {
-      caption: "A note from our founder",
-      name: "[Founder Name]",
-      role: "[Founder & Managing Partner], Zenlix Global",
-    },
+      "We would rather lose the fee than send you someone we will be apologizing for six months from now.",
     image: {
       src: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800",
       alt: "Two colleagues talking across a table in a bright meeting room",
     },
     /** The checkable facts, kept out of the prose so they are easy to correct. */
     facts: [
-      { label: "Founded", value: "[2019]" },
-      { label: "Headquarters", value: "[Plano, Texas]" },
-      { label: "Coverage", value: "[Nationwide, US]" },
       { label: "Practices", value: "Staffing, Search, RPO" },
+      { label: "Sectors", value: "IT, Non-IT, Healthcare" },
+      { label: "Engagements", value: "Direct, Contract, Embedded" },
+      { label: "Coverage", value: "Nationwide, US" },
     ],
   },
 
-  /** EDIT: the timeline. Add or drop chapters freely — the rail redraws. */
-  milestones: {
-    eyebrow: "How We Got Here",
-    heading: "The version we would give you over coffee.",
+  /** EDIT: the search process. Add or drop steps freely — the rail redraws. */
+  approach: {
+    eyebrow: "How a Search Runs",
+    heading: "The same steps on every engagement.",
     intro:
-      "No overnight scale story. Just a series of moments where a client asked for something we did not offer yet, and we decided to learn it properly rather than fake it.",
+      "No black box between the brief and the shortlist. This is what happens after you get in touch, and what you can hold us to at each stage.",
     items: [
       {
-        year: "[2019]",
-        title: "One desk, one search at a time",
-        body: "Zenlix starts as a single recruiter taking the searches other firms had handed back. No database worth the name, no brand — only the willingness to sit in a room until the brief made sense.",
+        step: "01",
+        title: "Intake",
+        body: "We start with a conversation rather than a job description: what the team is missing, what the first six months look like, and what would make this hire obviously successful.",
       },
       {
-        year: "[2021]",
-        title: "The first embedded team",
-        body: "A client asks us to stop sending resumes and start running their hiring instead. Two of our recruiters move inside their process, under their brand. That engagement became our RPO practice.",
+        step: "02",
+        title: "Calibration",
+        body: "You get the brief back in writing with the market reality attached: where the salary band sits, how deep the candidate pool actually is, and anything in the spec that will slow the search down.",
       },
       {
-        year: "[2023]",
-        title: "Past engineering",
-        body: "Finance, operations, and clinical roles start arriving through the same door. Rather than pretend one recruiter can cover all of it, we build the non-IT and healthcare desks and staff them with people who have worked those functions.",
+        step: "03",
+        title: "Search",
+        body: "We source directly into our network for the people who are not applying anywhere, and screen every one of them against the brief before you hear a name.",
       },
       {
-        year: "[2025]",
-        title: "A firm, not a founder",
-        body: "Executive search becomes its own practice, with the confidentiality and reference depth those roles demand — and the hardest searches stop depending on one person being free to run them.",
+        step: "04",
+        title: "Shortlist",
+        body: "Three or four candidates, each with a written case for being on the list and an honest note on where they run lighter than the spec.",
       },
       {
-        year: "Today",
-        title: "Still picking up the phone",
-        body: "Same test as the first search: would we make this introduction if the candidate were a friend and the client were our own team? If the answer is no, the shortlist is not ready.",
+        step: "05",
+        title: "Offer",
+        body: "We stay in it through references, offer, and notice period. That stretch is where good hires are most often lost, and it should end with a start date, not a maybe.",
       },
     ],
   },
@@ -388,12 +399,12 @@ export const aboutPage = {
     eyebrow: "How We Work",
     heading: "Four promises we would rather be held to than advertise.",
     intro:
-      "Every staffing firm says it is different. These are the specific, checkable things we do differently — hold us to them.",
+      "Every staffing firm says it is different. These are the specific, checkable things we do differently. Hold us to them.",
     items: [
       {
         num: "01",
         title: "You will hear what we actually think",
-        body: "If the band is below market, the interview loop is too long, or the role as written describes two different people, you will hear it in the first conversation — not after eight weeks of silence and an apologetic status call.",
+        body: "If the band is below market, the interview loop is too long, or the role as written describes two different people, you will hear it in the first conversation, not after eight weeks of silence and an apologetic status call.",
       },
       {
         num: "02",
@@ -408,7 +419,7 @@ export const aboutPage = {
       {
         num: "04",
         title: "We are still here at ninety days",
-        body: "We check in with both sides a quarter after the start date — and when a placement is not working, we say so first and fix it rather than wait to be called.",
+        body: "We check in with both sides a quarter after the start date, and when a placement is not working, we say so first and fix it rather than wait to be called.",
       },
     ],
   },
@@ -493,4 +504,29 @@ export const footer = {
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
   ] satisfies NavItem[],
+  /**
+   * EDIT: paste the profile URLs. An entry with an empty `href` renders
+   * nothing — a social icon that links to a page the firm does not run reads
+   * worse than no icon at all — and the whole row disappears when none are set.
+   *
+   * These also feed `sameAs` in the Organization JSON-LD, which is how search
+   * engines tie the profiles back to the site, so they belong in one list.
+   */
+  social: [
+    {
+      platform: "linkedin",
+      label: "Zenlix Global on LinkedIn",
+      href: "https://www.linkedin.com/company/zenlix-global/",
+    },
+    {
+      platform: "facebook",
+      label: "Zenlix Global on Facebook",
+      href: "https://www.facebook.com/share/19Hsv4xZv5/",
+    },
+    { platform: "x", label: "Zenlix Global on X", href: "" },
+    { platform: "instagram", label: "Zenlix Global on Instagram", href: "" },
+  ] satisfies SocialLink[],
 } as const;
+
+/** The social profiles that actually have a URL set. */
+export const activeSocialLinks = footer.social.filter((link) => link.href);
