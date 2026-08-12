@@ -117,8 +117,8 @@ export const legalDetails = {
 /** EDIT: nav menu items / links */
 export const mainNav: NavItem[] = [
   { label: "Expertise", href: "/#services" },
-  { label: "Our Firm", href: "/about" },
   { label: "Insights", href: "/#insights" },
+  { label: "Our Firm", href: "/about" },
   // "Partner With Us" was removed from the header — the gold "Hire Talent"
   // button already sends people to /contact, and two links to the same page
   // split the click. It still appears in the footer's Company column.
