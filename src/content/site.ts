@@ -33,6 +33,16 @@ export type Insight = {
   image: { src: string; alt: string };
 };
 
+function resolveSiteUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (configured) return configured.replace(/\/+$/, "");
+
+  const vercelHost = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercelHost) return `https://${vercelHost}`;
+
+  return "http://localhost:3000";
+}
+
 export const site = {
   name: "Zenlix Global",
   tagline: "IT & Non-IT Staffing, Executive Search",
@@ -40,9 +50,17 @@ export const site = {
     "Zenlix Global is a national staffing and executive search firm connecting companies with vetted IT and Non-IT talent, direct hire, contract, and RPO solutions.",
   /**
    * Used for canonical URLs, sitemap, robots and OG tags.
-   * Set NEXT_PUBLIC_SITE_URL in production (e.g. https://zenlixglobal.com).
+   * Set NEXT_PUBLIC_SITE_URL in production (e.g. https://www.zenlixglobal.com)
+   * — it must be the exact host visitors land on, redirects included, or every
+   * canonical points at a URL that 308s and Google files the page under "Page
+   * with redirect".
+   *
+   * The Vercel fallback is what a preview deployment gets when the variable is
+   * only set for the Production environment: pointing those at the production
+   * domain is right, and it keeps a canonical from ever rendering as localhost.
+   * Both reads are NEXT_PUBLIC_ so the server and the client bundle agree.
    */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: resolveSiteUrl(),
   locale: "en_US",
 } as const;
 
@@ -106,7 +124,7 @@ export const legalDetails = {
    * A2P registration asks for the same disclosure. Replace with the partner's
    * full registered name.
    */
-  messagingPartner: "Foxbridge Solutions Pvt Ltd",
+  messagingPartner: "AriseAI Solutions Pvt Ltd.",
   retention: {
     inquiries: "24 months",
     candidates: "36 months",
