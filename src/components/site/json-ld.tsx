@@ -10,6 +10,10 @@ export function OrganizationJsonLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: site.name,
+    /* "Zenlix" alone is the form Google currently autocorrects to "Zenox".
+       Declaring it as an alternate name is one of the signals that ties the
+       bare word to this organisation rather than a similarly spelled one. */
+    alternateName: "Zenlix",
     url: site.url,
     description: site.description,
     logo: `${site.url}/zenlix-mark.png`,
@@ -18,6 +22,10 @@ export function OrganizationJsonLd() {
     ...(activeSocialLinks.length > 0
       ? { sameAs: activeSocialLinks.map((link) => link.href) }
       : {}),
+    address: {
+      "@type": "PostalAddress",
+      ...contactDetails.postalAddress,
+    },
     contactPoint: [
       {
         "@type": "ContactPoint",

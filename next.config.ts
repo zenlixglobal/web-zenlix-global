@@ -1,5 +1,52 @@
 import type { NextConfig } from "next";
 
+/**
+ * Fail a production deploy that would ship the wrong canonical host.
+ *
+ * NEXT_PUBLIC_SITE_URL is inlined at build time, and every canonical tag, OG
+ * URL, sitemap <loc> and the robots.txt Sitemap line is derived from it. Left
+ * pointing at localhost or the preview host, the live site tells search engines
+ * to index a different origin — which is exactly how zenlixglobal.com came to
+ * canonicalise to web-zenlix-global.vercel.app and stayed out of results.
+ *
+ * Scoped to Vercel Production on purpose: preview deploys legitimately run on
+ * *.vercel.app, and a local `next build` legitimately runs on localhost.
+ */
+function assertProductionSiteUrl(): void {
+  if (process.env.VERCEL_ENV !== "production") return;
+
+  const context =
+    "A Vercel Production build must use the public domain (e.g. " +
+    "https://www.zenlixglobal.com): canonical tags, OG URLs, robots.txt and " +
+    "every sitemap <loc> are built from this value.";
+
+  const raw = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!raw) {
+    throw new Error(`NEXT_PUBLIC_SITE_URL is not set. ${context}`);
+  }
+
+  let hostname: string;
+  try {
+    hostname = new URL(raw).hostname;
+  } catch {
+    throw new Error(
+      `NEXT_PUBLIC_SITE_URL is not a valid absolute URL (${raw}). ${context}`,
+    );
+  }
+
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".vercel.app")
+  ) {
+    throw new Error(
+      `NEXT_PUBLIC_SITE_URL points at ${hostname}. ${context}`,
+    );
+  }
+}
+
+assertProductionSiteUrl();
+
 const nextConfig: NextConfig = {
   images: {
     // The placeholder photography still points at Unsplash. Once you swap in
@@ -11,6 +58,33 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+  },
+
+  /**
+   * Send the *.vercel.app deployment host to the real domain.
+   *
+   * Vercel keeps the generated preview host publicly reachable and serving the
+   * same 200s as production, so Google indexed it as a second copy of the site
+   * and ranked it alongside zenlixglobal.com. A 308 collapses the duplicate and
+   * passes the accumulated signals to the canonical host.
+   *
+   * Production-only: preview deployments are *supposed* to answer on their own
+   * .vercel.app URL, and redirecting those away would make them useless.
+   */
+  async redirects() {
+    if (process.env.VERCEL_ENV !== "production") return [];
+
+    const canonical = process.env.NEXT_PUBLIC_SITE_URL;
+    if (!canonical) return [];
+
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host" as const, value: ".*\\.vercel\\.app" }],
+        destination: `${canonical}/:path*`,
+        permanent: true,
+      },
+    ];
   },
 
   async headers() {

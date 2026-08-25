@@ -73,6 +73,20 @@ export const contactDetails = {
   /** Single-line form used in the footer. */
   addressShort: "5900 Balcones Drive, STE 100, Austin, TX 78731",
   /**
+   * Component form of the same address, for the Organization JSON-LD.
+   *
+   * Kept alongside the display strings rather than parsed out of them: a
+   * PostalAddress needs the locality, region and country as separate fields,
+   * and splitting "Austin, TX 78731" on punctuation is guesswork.
+   */
+  postalAddress: {
+    streetAddress: "5900 Balcones Drive, STE 100",
+    addressLocality: "Austin",
+    addressRegion: "TX",
+    postalCode: "78731",
+    addressCountry: "US",
+  },
+  /**
    * Where the address links to in the footer and on /contact.
    *
    * Google's documented Maps URL form rather than a share link or an embedded
@@ -511,7 +525,7 @@ export const footer = {
     {
       platform: "facebook",
       label: "Zenlix Global on Facebook",
-      href: "https://www.facebook.com/share/19Hsv4xZv5/",
+      href: "https://www.facebook.com/ZenlixGlobal",
     },
     { platform: "x", label: "Zenlix Global on X", href: "" },
     { platform: "instagram", label: "Zenlix Global on Instagram", href: "" },
