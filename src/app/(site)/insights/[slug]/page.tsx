@@ -90,7 +90,7 @@ export default async function InsightPage({ params }: Props) {
 
           <Reveal className="mt-12 max-w-180 border-t border-line pt-6">
             <Link
-              href="/#insights"
+              href="/insights"
               className="text-[13px] font-semibold text-navy-900 underline-offset-4 hover:underline"
             >
               <span aria-hidden>&larr;</span> All insights
