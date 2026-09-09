@@ -66,7 +66,7 @@ export const site = {
 
 /** EDIT: contact details — these also feed the footer and JSON-LD. */
 export const contactDetails = {
-  phone: "+1 (469) 692 3220",
+  phone: "+1 (737) 247 7004",
   email: "info@zenlixglobal.com",
   addressLine1: "5900 Balcones Drive, STE 100",
   addressLine2: "Austin, TX 78731",
@@ -276,6 +276,24 @@ export const advantage = {
 export const ctaStrip = {
   heading: "Ready to build a team that outperforms?",
   cta: { label: "Break the Ice", href: "/contact" },
+} as const;
+
+/**
+ * EDIT: /insights hub page copy.
+ *
+ * The hub exists so published articles are reachable by a crawler through a
+ * real page of links rather than only through sitemap.xml. Article cards come
+ * from the database, so there is no article copy here — only the framing.
+ */
+export const insightsPage = {
+  eyebrow: "Insights",
+  heading: "Hiring intelligence from the desks doing the placing.",
+  intro:
+    "Market data, salary movement, and what we are seeing across searches — written by the people running them, not a content team.",
+  /** Shown when nothing is published yet, so the page is never a bare grid. */
+  empty:
+    "New articles are being prepared. In the meantime, get in touch and we will share what we are seeing in your market directly.",
+  emptyCta: "Get in Touch",
 } as const;
 
 /** EDIT: social proof + insights. */
