@@ -225,6 +225,18 @@ export default function PrivacyPage() {
                 acquisition, or sale of assets, subject to this policy.
               </li>
             </ul>
+            {/* Carrier-required A2P 10DLC wording — keep verbatim. It sits
+                right after the list because "all other categories" refers to
+                the recipient categories above. */}
+            <p>
+              <strong>
+                No mobile information will be shared with third
+                parties/affiliates for marketing/promotional purposes. All other
+                categories exclude text messaging originator opt-in data and
+                consent; this information will not be shared with any third
+                parties.
+              </strong>
+            </p>
             <p>
               <strong>
                 We have not sold personal information, and we have not shared

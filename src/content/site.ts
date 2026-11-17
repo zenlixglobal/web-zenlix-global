@@ -66,7 +66,7 @@ export const site = {
 
 /** EDIT: contact details — these also feed the footer and JSON-LD. */
 export const contactDetails = {
-  phone: "+1 (737) 247 7004",
+  phone: "+1 (737) 370-9657",
   email: "info@zenlixglobal.com",
   addressLine1: "5900 Balcones Drive, STE 100",
   addressLine2: "Austin, TX 78731",

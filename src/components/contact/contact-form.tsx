@@ -271,14 +271,18 @@ export function ContactForm() {
             the same disclosure carriers ask for at A2P registration. It is
             deliberately not a checkbox: consent to be contacted about your own
             inquiry is the point of submitting the form. */}
+        <p className="mb-3 text-[12.5px] leading-relaxed text-navy-fg-muted">
+          By providing a telephone number and submitting this form you are
+          consenting to be contacted by SMS text message. Message &amp; data
+          rates may apply. You can reply STOP to opt-out of further messaging.
+        </p>
         <p className="mb-4 text-[12.5px] leading-relaxed text-navy-fg-muted">
           By submitting this form you agree that {site.name} and{" "}
           {legalDetails.messagingPartner}, acting on our behalf, may contact you
           about your inquiry at the email address and phone number you provided,
           including by autodialed calls and text messages. Consent is not a
           condition of being considered for any role or service. Message
-          frequency varies, and message and data rates may apply; reply STOP to
-          opt out. See our{" "}
+          frequency varies. See our{" "}
           <Link
             href="/terms"
             className="underline underline-offset-2 hover:text-gold-300"
